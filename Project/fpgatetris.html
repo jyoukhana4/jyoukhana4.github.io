@@ -1,0 +1,90 @@
+<!DOCTYPE HTML>
+<!--
+	Spectral by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html lang="en">
+	<head>
+		<title>FPGA Tetris Project</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="../assets/css/main.css" />
+    </head>
+	<body>
+
+		<!-- Page Wrapper -->
+			<div id="page-wrapper">
+
+				<!-- Header -->
+					<header id="header">
+						<h1><a href="../index.html">John Youkhana</a></h1>
+						<nav id="nav">
+							<ul>
+								<li class="special">
+									<a href="#menu" class="menuToggle"><span>Menu</span></a>
+									<div id="menu">
+										<ul>
+											<li><a href="../index.html">Home</a></li>
+											<li><a href="../aboutme.html">About Me</a></li>
+											<li><a href="../projects.html">Projects</a></li>
+											<li><a href="../coursework.html">Courses</a></li>
+										</ul>
+									</div>
+								</li>
+							</ul>
+						</nav>
+					</header>
+
+				<!-- Main -->
+					<article id="main">
+						<header>
+							<h2>FPGA Tetris</h2>
+							<p>Digital Systems Final Project</p>
+						</header>
+						<section class="wrapper style5">
+							<div class="inner">
+                                <h3><a href="Project/fpgatetris.html">Tetris on FPGA</a></h3>
+                                <p><span class="image left"><a href="../images/projects/fpgatetris_env.jpg"><img src="../images/projects/fpgatetris_env.jpg" alt="" /></a></span>(ECE 385) Digital Systems Laboratory Final Project</p>
+								<p>
+								For my ECE 385 final project, I implemented a fully functional version of Tetris on an FPGA using the RealDigital Urbana board.
+								This project showcased a hardware-software co-design approach, integrating a MicroBlaze softcore processor for USB keyboard input via SPI communication with a MAX3421E USB host controller. 
+								The game logic, including block spawning, movement, rotation, collision detection, and line-clearing, was implemented in SystemVerilog using a 10x22 grid structure. HDMI output was achieved through a VGA controller and a VGA-to-HDMI converter IP, with real-time display of game elements and on-screen ASCII-rendered text. 
+								A live score display and user interactions enhanced the gameplay, while timing and rendering were synchronized with video frame signals.
+								</br>
+								Beyond the core gameplay, I also incorporated an audio playback module that generated the classic Tetris theme using pulse-width modulation and a music ROM. 
+								This involved decoding encoded note and octave data to produce square wave audio signals compatible with the FPGA’s AUX audio output. The overall system demonstrated modular design, combinational logic, SoC integration, and multimedia signal processing. 
+								This project highlighted my ability to design complex digital systems with real-time input/output handling, embedded audio, and efficient hardware resource management.
+								</br>
+								<p><span class="image"><a href="../images/projects/fpgablock.jpg"><img src="../images/projects/fpgablock.jpg" alt="" style="width: 100%; max-width: 1000px; height: auto;"/></a></span></p>
+								<p><span class="image"><a href="../images/projects/fpgaimplementation.jpg"><img src="../images/projects/fpgaimplementation.jpg" alt="" style="width: 100%; max-width: 1000px; height: auto;"/></a></span></p>									
+							</div>
+						</section>
+					</article>
+
+				<!-- Footer -->
+					<footer id="footer">
+						<ul class="icons">
+							<li><a href="https://www.linkedin.com/in/jyoukhana8580/" class="icon brands fa-linkedin" target="_blank"><span class="label">linkedin</span></a></li>
+							<li><a href="mailto:jjy45321@gmail.com" class="icon solid fa-envelope" target="_blank"><span class="label">Email</span></a></li>
+							<li><a href="https://github.com/jyoukhana4" class="icon brands fa-github" target="_blank"><span class="label">Github</span></a></li>
+						</ul>
+						<ul class="copyright">
+							<li>&copy; Untitled</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+						</ul>
+					</footer>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="../assets/js/jquery.min.js"></script>
+			<script src="../assets/js/jquery.scrollex.min.js"></script>
+			<script src="../assets/js/jquery.scrolly.min.js"></script>
+			<script src="../assets/js/skel.min.js"></script>
+            <script src="../assets/js/browser.min.js"></script>
+			<script src="../assets/js/breakpoints.min.js"></script>
+			<script src="../assets/js/util.js"></script>
+			<script src="../assets/js/main.js"></script>
+
+	</body>
+</html>
