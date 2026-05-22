@@ -1,0 +1,109 @@
+<!DOCTYPE HTML>
+<!--
+	Spectral by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html lang="en">
+	<head>
+		<title>FPGA Tetris Project</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="../assets/css/main.css" />
+    </head>
+	<body>
+
+		<!-- Page Wrapper -->
+			<div id="page-wrapper">
+
+				<!-- Header -->
+					<header id="header">
+						<h1><a href="../index.html">John Youkhana</a></h1>
+						<nav id="nav">
+							<ul>
+								<li class="special">
+									<a href="#menu" class="menuToggle"><span>Menu</span></a>
+									<div id="menu">
+										<ul>
+											<li><a href="../index.html">Home</a></li>
+											<li><a href="../aboutme.html">About Me</a></li>
+											<li><a href="../projects.html">Projects</a></li>
+											<li><a href="../coursework.html">Courses</a></li>
+										</ul>
+									</div>
+								</li>
+							</ul>
+						</nav>
+					</header>
+
+				<!-- Main -->
+					<article id="main">
+						<header>
+							<h2>Reaction Wheel Pendulum</h2>
+							<p>Control Systems Project</p>
+						</header>
+						<section class="wrapper style5">
+							<div class="inner">
+                                <h3><a href="control.html">Reaction Wheel Pendulum</a></h3>
+                                <p><span class="image left"><a href="../images/projects/pendulum.jpg"><img src="../images/projects/pendulum.jpg" alt="" /></a></span>Control Systems Final Project</p>
+								<p>
+                                This project involved designing and implementing a real-time control system for a reaction wheel pendulum. The system consisted of a pendulum arm with a DC motor and flywheel mounted at the end. 
+                                Unlike a directly actuated pendulum, the pendulum itself was not driven by a motor at the pivot. Instead, control was achieved by 
+                                accelerating the reaction wheel, which produced an equal and opposite reaction torque on the pendulum. Optical encoders measured the pendulum angle and reaction wheel angle, while 
+                                the controller generated motor commands in real time using a TI C2000 board with MATLAB/Simulink.
+								</br>
+                                The project began with deriving a nonlinear dynamic model of the pendulum and reaction wheel system. The nonlinear model described the angular acceleration of the pendulum and the reaction wheel as functions of gravity, motor torque, and friction. 
+                                After deriving the equations of motion, we performed system identification to estimate key plant parameters, including the pendulum’s natural 
+                                frequency and the motor input gains relating the control command to pendulum and wheel acceleration. These parameters were then used to create a linearized state-space model around the inverted equilibrium, 
+                                where the pendulum is upright and naturally unstable.
+								</br>
+                                Using the linearized model, we designed a state-feedback controller to stabilize the pendulum in the inverted position. The final feedback controller used three states: pendulum angle deviation from upright, 
+                                pendulum angular velocity, and reaction wheel angular velocity. Absolute reaction wheel angle was intentionally ignored because the wheel’s angular position does not affect whether the pendulum is balanced; only
+                                its speed matters. Pole placement was used to choose feedback gains that moved the closed-loop poles to stable locations, allowing the controller to reject small disturbances and drive the pendulum back toward the upright equilibrium.
+                                </br>
+                                A major part of the project was bridging the gap between simulation and physical hardware. In simulation, the controller had access to clean state information, but on the real system the encoders only measured position.
+                                 Pendulum and wheel velocities had to be estimated from encoder signals, and simple derivative-based estimates were noisy due to encoder quantization. Small changes in measured angle could appear as large jumps in velocity, causing the controller to 
+                                overreact. To address this, we implemented a full-state observer that acted as a model-based estimator. The observer used the motor command, measured angles, and the linearized plant model to estimate the full state, including 
+                                smoother angular velocity estimates.
+                                </br>
+                                The observer was later improved by decoupling the pendulum and reaction wheel estimation into separate subsystems. This reduced unnecessary cross-coupling, where error in one encoder measurement could influence the state 
+                                estimate of the other subsystem. By allowing pendulum angle error to correct only pendulum states and wheel angle error to correct only wheel states, the observer became more robust to noise and model mismatch. 
+                                The final result was a more reliable hardware controller that demonstrated the importance of modeling, system identification, feedback control, observer design, and real-time embedded implementation. 
+                                This project strengthened my understanding of how control systems behave differently in simulation versus physical hardware, especially when friction, sensor noise, quantization, and actuator limits are present.
+                                </br>
+                                <h3><a href="/Reports/control.pdf">Project Report</a></h3>
+								<hr />
+								</br>
+								<p><span class="image"><a href="../images/projects/pendulum_observer.png"><img src="../images/projects/pendulum_observer.png" alt="" style="width: 100%; max-width: 1000px; height: auto;"/></a></span></p>
+								<p><span class="image"><a href="../images/projects/reactionwheel_block.png"><img src="../images/projects/reactionwheel_block.png" alt="" style="width: 100%; max-width: 1000px; height: auto;"/></a></span></p>		
+                                <p><span class="image"><a href="../images/projects/pendulum_threestate.png"><img src="../images/projects/pendulum_threestate.png" alt="" style="width: 100%; max-width: 1000px; height: auto;"/></a></span></p>								
+							</div>
+						</section>
+					</article>
+
+				<!-- Footer -->
+					<footer id="footer">
+						<ul class="icons">
+							<li><a href="https://www.linkedin.com/in/jyoukhana8580/" class="icon brands fa-linkedin" target="_blank"><span class="label">linkedin</span></a></li>
+							<li><a href="mailto:jjy45321@gmail.com" class="icon solid fa-envelope" target="_blank"><span class="label">Email</span></a></li>
+							<li><a href="https://github.com/jyoukhana4" class="icon brands fa-github" target="_blank"><span class="label">Github</span></a></li>
+						</ul>
+						<ul class="copyright">
+							<li>&copy; Untitled</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+						</ul>
+					</footer>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="../assets/js/jquery.min.js"></script>
+			<script src="../assets/js/jquery.scrollex.min.js"></script>
+			<script src="../assets/js/jquery.scrolly.min.js"></script>
+			<script src="../assets/js/skel.min.js"></script>
+            <script src="../assets/js/browser.min.js"></script>
+			<script src="../assets/js/breakpoints.min.js"></script>
+			<script src="../assets/js/util.js"></script>
+			<script src="../assets/js/main.js"></script>
+
+	</body>
+</html>
