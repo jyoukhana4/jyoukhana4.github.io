@@ -1,0 +1,584 @@
+<!DOCTYPE HTML>
+<!--
+    Spectral by HTML5 UP
+    html5up.net | @ajlkn
+    Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html lang="en">
+<head>
+    <title>Synchronous Buck Converter | John Youkhana</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Engineering design of a synchronous DC-DC buck converter, covering MOSFET switching, PWM, LC filter selection, measurement, losses, and feedback control development." />
+    <link rel="stylesheet" href="../assets/css/main.css" />
+    <style>
+        /* Styles scoped to this buck-converter project; Spectral remains intact. */
+        .buck-page { max-width: 1050px; margin: 0 auto; }
+        .buck-lede { font-size: 1.12em; line-height: 1.85; }
+        .buck-meta { font-size: 0.89em; letter-spacing: 0.08em; text-transform: uppercase; color: #555; }
+        .buck-metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1em; margin: 2em 0; }
+        .buck-metric { border: 1px solid #d7dade; border-radius: 6px; padding: 1.15em; background: #fff; }
+        .buck-metric strong { display: block; font-size: 1.55em; line-height: 1.25; color: #24495b; margin: 0.25em 0; }
+        .buck-metric span { display: block; font-size: 0.78em; text-transform: uppercase; letter-spacing: 0.08em; color: #646d74; }
+        .buck-metric small { display: block; color: #666; line-height: 1.6; }
+        .buck-toc { border: 1px solid #dce2e7; border-left: 4px solid #32748b; padding: 1.2em 1.5em; margin: 2.5em 0; background: #f8fafb; }
+        .buck-toc h3 { margin-bottom: 0.7em; }
+        .buck-toc ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5em 1.5em; padding-left: 1.2em; margin: 0; }
+        .buck-toc li { padding-left: 0.2em; margin: 0; }
+        .buck-section { padding-top: 1.2em; margin-top: 2.7em; border-top: 1px solid #dce1e5; scroll-margin-top: 5.5em; }
+        .buck-section h2 { margin-bottom: 0.8em; }
+        .buck-section h3 { margin-top: 2em; }
+        .buck-diagram { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.55em; margin: 1.6em 0; }
+        .buck-diagram > div { background: #eef5f7; border: 1px solid #bdd0d8; border-radius: 5px; padding: 1em 0.55em; text-align: center; }
+        .buck-diagram strong { display: block; font-size: 0.88em; color: #254f63; }
+        .buck-diagram small { display: block; margin-top: 0.35em; color: #50616b; font-size: 0.73em; line-height: 1.5; }
+        .buck-equation { background: #f2f5f7; border-left: 3px solid #32748b; border-radius: 2px; padding: 0.95em 1.2em; margin: 1.05em 0; font-family: Georgia, "Times New Roman", serif; font-size: 1.07em; line-height: 1.7; overflow-x: auto; }
+        .buck-equation .note { display: block; font: 0.8em/1.6 Arial, sans-serif; color: #5d6870; margin-top: 0.35em; }
+        .buck-figure { margin: 1.7em 0 2.1em; }
+        .buck-figure a { display: block; border-bottom: 0; }
+        .buck-figure img { display: block; width: 100%; height: auto; max-height: 690px; object-fit: contain; background: #fff; border: 1px solid #dce1e5; border-radius: 4px; }
+        .buck-figure figcaption { margin-top: 0.6em; font-size: 0.87em; color: #666; line-height: 1.6; }
+        .buck-image-missing { display: none; padding: 2.5em 1.5em; text-align: center; border: 1px dashed #aebbc2; background: #f8fafb; color: #687780; border-radius: 4px; }
+        .buck-figure.is-missing > a { display: none; }
+        .buck-figure.is-missing .buck-image-missing { display: block; }
+        .buck-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.35em; }
+        .buck-grid .buck-figure { margin-top: 0; }
+        .buck-table { width: 100%; margin: 1.3em 0 1.8em; }
+        .buck-table th { white-space: nowrap; }
+        .buck-callout { background: #f7f9fa; border: 1px solid #dce1e5; border-radius: 5px; padding: 1.2em 1.4em; margin: 1.5em 0; }
+        .buck-callout p:last-child { margin-bottom: 0; }
+        .buck-small { font-size: 0.88em; color: #646d74; }
+        .buck-references li { margin-bottom: 0.55em; }
+        @media screen and (max-width: 736px) {
+            .buck-metrics { grid-template-columns: 1fr; }
+            .buck-toc ul { grid-template-columns: 1fr; }
+            .buck-diagram { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .buck-grid { grid-template-columns: 1fr; }
+            .buck-metric strong { font-size: 1.4em; }
+            .buck-table { display: block; overflow-x: auto; }
+        }
+    
+        .buck-status { margin: 1.4em 0 2em; padding: 0.95em 1.25em; border-left: 4px solid #32748b; background: #f4f8fa; }
+        .buck-status strong { color: #22465a; }
+        .buck-status p { margin: 0; }
+        .buck-subtle { font-size: .9em; color: #59636c; }
+        .buck-diagram { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        .buck-label { font-weight: bold; color: #24495b; }
+        .buck-equation strong { font-weight: bold; }
+        @media screen and (max-width: 736px) { .buck-diagram { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+</style>
+</head>
+<body class="is-preload">
+    <div id="page-wrapper">
+        <header id="header">
+            <h1><a href="../index.html">John Youkhana</a></h1>
+            <nav id="nav"><ul><li class="special">
+                <a href="#menu" class="menuToggle"><span>Menu</span></a>
+                <div id="menu"><ul>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="../aboutme.html">About Me</a></li>
+                    <li><a href="../projects.html">Projects</a></li>
+                    <li><a href="../coursework.html">Courses</a></li>
+                </ul></div>
+            </li></ul></nav>
+        </header>
+        <article id="main">
+            <header>
+                <h2>Synchronous Buck Converter</h2>
+                <p>Power Electronics &nbsp;|&nbsp; PWM &nbsp;|&nbsp; Feedback Control Development</p>
+            </header>
+            <section class="wrapper style5"><div class="inner buck-page">
+                
+    <p class="buck-meta">Independent Project &nbsp;·&nbsp; 2026 &nbsp;·&nbsp; In Progress</p>
+    <p class="buck-lede">
+        This project explores the design and characterization of a synchronous DC–DC buck converter,
+        with a longer-term goal of implementing regulated output-voltage feedback. I am developing the
+        power-stage design around a complementary MOSFET half-bridge, an output LC filter, and a
+        controlled PWM switching signal. The work combines converter analysis, component and
+        gate-drive considerations, waveform measurement, and an investigation of how best to close
+        the control loop.
+    </p>
+    <div class="buck-status">
+        <p><strong>Project status:</strong> Power-stage analysis and PWM/measurement work are underway.
+        The final feedback implementation has <strong>not</strong> been selected or validated. I am
+        comparing analog, dedicated digital, and microcontroller-based approaches before committing
+        to the next revision.</p>
+    </div>
+    <div class="buck-metrics" aria-label="Project characteristics">
+        <div class="buck-metric"><span>Topology</span><strong>Synchronous buck</strong><small>High-side and low-side MOSFET switching</small></div>
+        <div class="buck-metric"><span>PWM investigations</span><strong>50 kHz</strong><small>Explored with ATmega328P/Timer1 in related bench work</small></div>
+        <div class="buck-metric"><span>Feedback control</span><strong>In progress</strong><small>Analog vs. digital vs. embedded tradeoffs</small></div>
+    </div>
+    <figure class="buck-figure">
+        <a href="../images/projects/synchronous-buck/prototype.png" target="_blank" rel="noopener"><img src="../images/projects/synchronous-buck/prototype.png" alt="Synchronous buck converter hardware or assembled prototype" loading="lazy" /></a>
+        <div class="buck-image-missing">Hardware / prototype: <code>prototype.png</code></div>
+        <figcaption>Project hardware or prototype. Replace this image with a photograph of your converter when available.</figcaption>
+    </figure>
+    <div class="buck-toc">
+        <h3>Project Sections</h3>
+        <ul>
+            <li><a href="#architecture">Converter architecture</a></li>
+            <li><a href="#operation">Synchronous switching</a></li>
+            <li><a href="#duty">Duty ratio and PWM design</a></li>
+            <li><a href="#filter">Inductor and capacitor choices</a></li>
+            <li><a href="#gates">Gate drive and dead time</a></li>
+            <li><a href="#losses">Loss mechanisms and efficiency</a></li>
+            <li><a href="#sensing">Measurements and feedback signals</a></li>
+            <li><a href="#layout">Hardware layout considerations</a></li>
+            <li><a href="#characterization">Characterization approach</a></li>
+            <li><a href="#control">Control strategy — next steps</a></li>
+        </ul>
+    </div>
+    <section id="architecture" class="buck-section">
+        <h2>1. Converter Architecture</h2>
+        <p>
+            A buck converter reduces a DC input voltage to a lower DC output by rapidly switching
+            the input across an inductor and using a capacitor to smooth the resulting output voltage.
+            Rather than continuously dropping the excess voltage across a linear pass device, the
+            power MOSFETs primarily operate in on and off states, allowing efficient conversion.
+        </p>
+        <p>
+            The synchronous version replaces the conventional freewheeling diode with a second,
+            actively controlled MOSFET. The two transistors form a half-bridge whose midpoint is
+            the switch node, <strong>V<sub>SW</sub></strong>. The inductor connects this node to the
+            output, while an output capacitor and load are connected from the output to ground.
+        </p>
+        <div class="buck-diagram" aria-label="Simplified synchronous buck signal flow">
+            <div><strong>DC input</strong><small>V<sub>in</sub> and local capacitors</small></div>
+            <div><strong>MOSFET half-bridge</strong><small>Q<sub>H</sub>, Q<sub>L</sub> and gate driver</small></div>
+            <div><strong>LC output filter</strong><small>Inductor and capacitor</small></div>
+            <div><strong>Load / measurement</strong><small>V<sub>out</sub> and I<sub>L</sub></small></div>
+        </div>
+        <p>
+            The eventual feedback controller will measure the output voltage, compare it with a
+            reference, and adjust the PWM duty ratio. At this stage, the power-conversion hardware
+            and the selection of the control platform are treated as separate design problems so
+            that the converter can be characterized before the final compensation scheme is chosen.
+        </p>
+        <figure class="buck-figure">
+        <a href="../images/projects/synchronous-buck/schematic.png" target="_blank" rel="noopener"><img src="../images/projects/synchronous-buck/schematic.png" alt="Synchronous buck power stage schematic" loading="lazy" /></a>
+        <div class="buck-image-missing">Power-stage schematic: <code>schematic.png</code></div>
+        <figcaption>Power-stage schematic showing the half-bridge, gate driver, output filter, input decoupling, and measurement nodes.</figcaption>
+    </figure>
+    </section>
+
+    <section id="operation" class="buck-section">
+        <h2>2. Why Use a Synchronous Buck Converter?</h2>
+        <p>
+            In an asynchronous buck converter, a diode conducts the inductor current while the
+            high-side switch is off. The diode is simple and does not require a second gate signal,
+            but its forward-voltage drop produces conduction loss. Replacing the diode with a
+            low-side MOSFET can reduce that loss, particularly when the load current is large enough
+            for the diode's forward drop to become significant.
+        </p>
+        <p>
+            The tradeoff is increased complexity. Both MOSFET gates must be driven correctly,
+            particularly during switching transitions. If the devices turn on simultaneously, they
+            create a low-impedance path from the input supply to ground. The gate-drive design must
+            therefore include appropriate <strong>dead time</strong> between switching events.
+        </p>
+        <h3>High-Side On Interval</h3>
+        <p>
+            When Q<sub>H</sub> is on and Q<sub>L</sub> is off, the switch node is approximately at
+            the input voltage. The inductor sees approximately V<sub>in</sub> − V<sub>out</sub>, so
+            its current increases:
+        </p>
+        <div class="buck-equation">dI<sub>L</sub>/dt ≈ (V<sub>in</sub> − V<sub>out</sub>)/L</div>
+        <h3>Low-Side On Interval</h3>
+        <p>
+            When Q<sub>H</sub> is off and Q<sub>L</sub> is on, the switch node is pulled near
+            ground. The inductor voltage is approximately −V<sub>out</sub>, and its current decreases:
+        </p>
+        <div class="buck-equation">dI<sub>L</sub>/dt ≈ −V<sub>out</sub>/L</div>
+        <p>
+            Under ideal steady-state continuous-conduction conditions, the average inductor voltage
+            must be zero over a switching period. This volt-second balance leads directly to the
+            familiar ideal buck relationship, V<sub>out</sub> ≈ D V<sub>in</sub>.
+        </p>
+    </section>
+
+    <section id="duty" class="buck-section">
+        <h2>3. PWM Frequency and Duty-Ratio Control</h2>
+        <p>
+            The main control input to the buck converter is the PWM duty ratio, D. It represents
+            the fraction of the switching period during which the high-side switch is commanded on.
+            With a constant switching frequency, changing D adjusts the average voltage applied
+            to the output filter.
+        </p>
+        <div class="buck-equation">
+            D = t<sub>on</sub>/T<sub>s</sub> &nbsp;&nbsp; and &nbsp;&nbsp;
+            T<sub>s</sub> = 1/f<sub>s</sub>
+        </div>
+        <p>
+            For a <strong>50kHz</strong> switching frequency, the switching period is 20µs. As an
+            illustrative timing calculation, a 30% high-side duty ratio corresponds to a 6µs
+            commanded on interval, while 70% corresponds to 14µs. Actual gate waveforms must also
+            account for propagation delays and intentionally inserted dead time.
+        </p>
+        <div class="buck-equation">
+            f<sub>s</sub> = 50kHz &rArr; T<sub>s</sub> = 20µs<br />
+            D = 0.30 &rArr; t<sub>on</sub> = 6µs<br />
+            D = 0.70 &rArr; t<sub>on</sub> = 14µs
+            <span class="note">Illustrative command timing, not a substitute for measured MOSFET gate timing.</span>
+        </div>
+        <h3>Exploring Timer-Based PWM</h3>
+        <p>
+            As part of related converter experimentation, I worked with an Arduino Uno using the
+            ATmega328P's 16-bit Timer1 to generate a 50kHz PWM waveform. A hardware timer is more
+            suitable for repeatable high-frequency switching than toggling an output pin using
+            software delays, because the timer continues operating independently of ordinary
+            application-code execution.
+        </p>
+        <p>
+            At a 16MHz timer clock and a prescaler of one, a 50kHz period contains 320 clock
+            counts in a single-slope PWM configuration. That offers a useful duty-ratio resolution
+            for initial experiments. However, producing the complementary, properly interlocked
+            high-side and low-side drive signals is a separate requirement; a single PWM pin is not
+            by itself a safe synchronous gate-drive solution.
+        </p>
+        <figure class="buck-figure">
+        <a href="../images/projects/synchronous-buck/pwm-waveforms.png" target="_blank" rel="noopener"><img src="../images/projects/synchronous-buck/pwm-waveforms.png" alt="Oscilloscope traces of PWM and complementary MOSFET gate-drive timing" loading="lazy" /></a>
+        <div class="buck-image-missing">PWM timing / gate signals: <code>pwm-waveforms.png</code></div>
+        <figcaption>PWM and gate-drive timing. Include measured high-side/low-side gate signals and annotate dead time if available.</figcaption>
+    </figure>
+    </section>
+
+    <section id="filter" class="buck-section">
+        <h2>4. Selecting the Output Inductor and Capacitor</h2>
+        <h3>Inductor Current Ripple</h3>
+        <p>
+            The inductor stores energy while the high-side switch is on and releases energy while
+            the low-side device conducts. Its value sets how quickly the current changes each
+            cycle. For an ideal converter operating in continuous conduction, the peak-to-peak
+            inductor-current ripple is approximately:
+        </p>
+        <div class="buck-equation">
+            ΔI<sub>L,pp</sub> ≈ [(V<sub>in</sub> − V<sub>out</sub>)D] / (L f<sub>s</sub>)
+        </div>
+        <p>
+            A larger inductance reduces ripple current but can increase component size, DC
+            resistance, and transient-response time. A smaller inductance allows the current to
+            change more quickly, but produces larger ripple and may increase core and switching
+            stresses.
+        </p>
+        <p>
+            In my earlier ECE 469 converter experiments, I compared <strong>2mH</strong> and
+            <strong>300µH</strong> inductors to examine how inductance affects ripple,
+            operating mode, and response. Those were course-laboratory measurements informing
+            this independent design; they are not being presented here as measurements of the
+            final standalone converter.
+        </p>
+        <h3>Continuous and Discontinuous Conduction</h3>
+        <p>
+            In continuous-conduction mode (CCM), the inductor current remains continuous across
+            the switching period. With a diode-based buck, the current can reach zero at light
+            load, entering discontinuous-conduction mode (DCM). A synchronously switched low-side
+            MOSFET can instead allow reverse inductor current if it continues conducting after
+            the current crosses zero. This changes light-load behavior and may reduce efficiency
+            if current is unnecessarily circulated back toward the input.
+        </p>
+        <h3>Output Capacitor Selection</h3>
+        <p>
+            The output capacitor supplies the difference between the inductor current and load
+            current, reducing switching ripple at V<sub>out</sub>. For a simple ideal CCM
+            approximation, neglecting equivalent series resistance (ESR):
+        </p>
+        <div class="buck-equation">
+            ΔV<sub>out,pp</sub> ≈ ΔI<sub>L,pp</sub> / (8f<sub>s</sub>C)
+            <span class="note">The capacitor's ESR also introduces a ripple contribution, approximately ΔI<sub>L,pp</sub> × ESR.</span>
+        </div>
+        <p>
+            Choosing the capacitor therefore involves capacitance, ESR, ripple-current rating,
+            voltage rating, and the effective capacitance under DC bias. The inductor and capacitor
+            must ultimately be selected together for the intended load and control-bandwidth targets.
+        </p>
+        <figure class="buck-figure">
+        <a href="../images/projects/synchronous-buck/inductor-current.png" target="_blank" rel="noopener"><img src="../images/projects/synchronous-buck/inductor-current.png" alt="Inductor current waveform captured during buck converter experimentation" loading="lazy" /></a>
+        <div class="buck-image-missing">Inductor current waveform: <code>inductor-current.png</code></div>
+        <figcaption>Inductor-current waveform used to inspect average current, ripple, and possible zero crossings.</figcaption>
+    </figure>
+    </section>
+
+    <section id="gates" class="buck-section">
+        <h2>5. Gate Drive, Dead Time, and Device Stress</h2>
+        <p>
+            A synchronous converter requires the high-side and low-side MOSFETs to switch in a
+            controlled sequence. The gate driver must provide sufficient current to charge and
+            discharge the MOSFET gate capacitances and, for an N-channel high-side device, must
+            establish an appropriate gate voltage relative to the moving switch node.
+        </p>
+        <p>
+            Dead time is deliberately inserted between turning one MOSFET off and turning the
+            other on. It prevents shoot-through caused by finite gate-discharge and device
+            switching times. However, excessive dead time has its own cost: during part of the
+            interval, the inductor current may freewheel through a MOSFET body diode, increasing
+            conduction loss and potentially worsening reverse-recovery behavior.
+        </p>
+        <div class="buck-callout">
+            <p><strong>Gate-drive tradeoff:</strong> Too little dead time risks simultaneous
+            conduction; too much dead time raises body-diode conduction losses. The appropriate
+            setting should be checked using actual gate and switch-node waveforms rather than
+            chosen only from nominal MOSFET datasheet timing.</p>
+        </div>
+        <p>
+            Device selection must account for blocking voltage, peak and RMS currents,
+            R<sub>DS(on)</sub>, total gate charge, switching energy, and thermal resistance.
+            The worst-case stresses occur at operating points that may differ from the point
+            of maximum output power. I treat the MOSFET and driver ratings as a combined
+            design problem, especially as switching frequency increases.
+        </p>
+    </section>
+
+    <section id="losses" class="buck-section">
+        <h2>6. Conduction Losses, Switching Losses, and Efficiency</h2>
+        <p>
+            The ideal relationship V<sub>out</sub> = D V<sub>in</sub> neglects losses. In
+            practical testing, the measured output can fall below this ideal prediction,
+            particularly as load current rises and the semiconductor and inductor voltage drops
+            become more important. Earlier buck-converter experiments also showed why ideal
+            duty-ratio calculations need to be compared against actual waveforms and input/output
+            power measurements.
+        </p>
+        <h3>MOSFET Conduction Loss</h3>
+        <p>
+            When a MOSFET is on, it behaves approximately like a small resistance. As a first
+            approximation, conduction power is proportional to the square of RMS current:
+        </p>
+        <div class="buck-equation">
+            P<sub>cond</sub> ≈ I<sub>H,rms</sub><sup>2</sup>R<sub>DS(on),H</sub> +
+            I<sub>Q_L,rms</sub><sup>2</sup>R<sub>DS(on),L</sub>
+        </div>
+        <h3>Switching Loss</h3>
+        <p>
+            During turn-on and turn-off, a MOSFET can simultaneously support substantial
+            drain-source voltage and current. One rough hard-switching estimate is:
+        </p>
+        <div class="buck-equation">
+            P<sub>sw</sub> ≈ ½ V<sub>in</sub>I<sub>sw</sub>(t<sub>r</sub> + t<sub>f</sub>)f<sub>s</sub>
+            <span class="note">A first-order estimate only; measured switching energy and diode recovery may alter the result substantially.</span>
+        </div>
+        <p>
+            Conduction and switching losses contribute to total heating. Additional losses
+            include inductor winding resistance and core loss, output-capacitor ESR, body-diode
+            conduction during dead time, gate-drive power, and other parasitics. The converter's
+            efficiency is calculated from measured input and output power:
+        </p>
+        <div class="buck-equation">
+            η = P<sub>out</sub> / P<sub>in</sub> × 100%<br />
+            P<sub>out</sub> ≈ V<sub>out</sub>I<sub>out</sub>
+        </div>
+        <p>
+            The design therefore involves a compromise: higher switching frequency can reduce
+            the required filter size, but generally increases switching-related losses; lower
+            switching frequency reduces the number of transitions per second but can require
+            larger passive components to maintain the same ripple.
+        </p>
+    </section>
+
+    <section id="sensing" class="buck-section">
+        <h2>7. Measuring the Converter and Preparing for Feedback</h2>
+        <p>
+            A closed-loop converter needs an accurate representation of its output. The most
+            direct feedback variable for output-voltage regulation is V<sub>out</sub>, which can
+            be compared with a desired reference voltage V<sub>ref</sub>. An embedded controller
+            would typically measure a scaled voltage through an ADC, while an analog controller
+            would compare the voltage using a continuous-time error amplifier.
+        </p>
+        <h3>Scaling a Voltage for an ADC</h3>
+        <p>
+            When the output voltage exceeds the controller's ADC input range, a resistor divider
+            can scale it down. Ignoring ADC loading:
+        </p>
+        <div class="buck-equation">
+            V<sub>ADC</sub> = V<sub>out</sub> · R<sub>bottom</sub> /
+            (R<sub>top</sub> + R<sub>bottom</sub>)
+        </div>
+        <p>
+            Calibration is necessary because resistor tolerances, sensor gain, offsets, and
+            ADC reference error can affect the reported value. A practical check compares
+            the digitized reading against a multimeter or oscilloscope and fits a gain (and,
+            if necessary, an offset) before using it in a feedback loop.
+        </p>
+        <h3>Inductor-Current Measurement</h3>
+        <p>
+            Current sensing is useful for observing conduction mode, calculating ripple,
+            enforcing current limits, and evaluating current-mode control. It is not strictly
+            required for basic voltage-mode PI control, but it becomes important for protection
+            and more advanced control strategies.
+        </p>
+        <p>
+            In related Arduino-based laboratory work, I investigated sensor scaling and
+            compared voltage/current telemetry against instrument readings. That experience
+            informs the measurement architecture of this project, but the final sensor
+            interface and calibration values for the independent converter remain to be set.
+        </p>
+        <figure class="buck-figure">
+        <a href="../images/projects/synchronous-buck/measurements.png" target="_blank" rel="noopener"><img src="../images/projects/synchronous-buck/measurements.png" alt="Oscilloscope or measurement setup for synchronous buck converter" loading="lazy" /></a>
+        <div class="buck-image-missing">Measurement setup: <code>measurements.png</code></div>
+        <figcaption>Bench instrumentation, including switch-node, output-voltage, and current-sense measurements.</figcaption>
+    </figure>
+    </section>
+
+    <section id="layout" class="buck-section">
+        <h2>8. Hardware and PCB Layout Considerations</h2>
+        <p>
+            The PCB design is shaped by the current paths that change most rapidly. In a
+            synchronous buck, the high-frequency commutation loop includes the local input
+            capacitors and the high-side/low-side MOSFET pair. Keeping this loop compact reduces
+            stray inductance, ringing, and voltage overshoot at the switch node.
+        </p>
+        <p>
+            The MOSFET gate traces and their returns should also be short and well-defined.
+            Gate resistance, driver current, and layout inductance together influence switching
+            transitions. The switch-node copper region requires a balance: sufficient width
+            for current and thermal handling, but not so much area that unnecessary capacitive
+            coupling and noise increase.
+        </p>
+        <p>
+            Low-level sense wiring should be kept away from switching nodes and the high-current
+            power loop where practical. Input and output capacitors should be positioned to
+            minimize their relevant current-loop paths. After assembly, measured switch-node
+            ringing and MOSFET temperatures are useful feedback for revising the layout.
+        </p>
+        <figure class="buck-figure">
+        <a href="../images/projects/synchronous-buck/pcb-layout.png" target="_blank" rel="noopener"><img src="../images/projects/synchronous-buck/pcb-layout.png" alt="KiCad PCB layout of synchronous buck converter" loading="lazy" /></a>
+        <div class="buck-image-missing">PCB layout: <code>pcb-layout.png</code></div>
+        <figcaption>Power-stage placement and routing, emphasizing the switching loop, gate-drive paths, and sensing connections.</figcaption>
+    </figure>
+    </section>
+
+    <section id="characterization" class="buck-section">
+        <h2>9. Characterization Approach and Observations</h2>
+        <p>
+            My evaluation focuses on confirming switching behavior before adding a closed-loop
+            controller. The key measurements are V<sub>in</sub>, V<sub>out</sub>, the PWM duty
+            command, switch-node voltage, inductor current, and input/output power. Together
+            they show whether the power stage behaves as predicted and where practical losses
+            appear.
+        </p>
+        <h3>Duty-Ratio Sweep</h3>
+        <p>
+            A useful first characterization is to change duty ratio at a fixed input voltage
+            and load, then plot measured V<sub>out</sub> against the ideal prediction
+            D V<sub>in</sub>. The difference can help identify nonideal behavior such as
+            MOSFET and inductor conduction drop, switching loss, dead-time effects, or
+            changes in operating mode. A larger discrepancy does not uniquely identify
+            any one loss mechanism; separate measurements are needed to isolate causes.
+        </p>
+        <figure class="buck-figure">
+        <a href="../images/projects/synchronous-buck/duty-sweep.png" target="_blank" rel="noopener"><img src="../images/projects/synchronous-buck/duty-sweep.png" alt="Graph of buck converter output voltage versus duty ratio" loading="lazy" /></a>
+        <div class="buck-image-missing">Duty-ratio sweep: <code>duty-sweep.png</code></div>
+        <figcaption>Suggested plot: measured output voltage versus commanded duty ratio, with the ideal Vout = D × Vin relationship for reference.</figcaption>
+    </figure>
+        <h3>Switching and Current Waveforms</h3>
+        <p>
+            Oscilloscope captures of the switch node and inductor current are useful for
+            checking switching period, edge behavior, current ripple, and whether inductor
+            current approaches or crosses zero. I also compare gate-drive transitions
+            to confirm that the two MOSFETs are not commanded on simultaneously.
+        </p>
+        <p class="buck-small">
+            The discussion above combines converter-theory predictions with experience from
+            earlier course experiments. No unverified standalone-prototype efficiency,
+            regulation, or load-step results are claimed here.
+        </p>
+    </section>
+
+    <section id="control" class="buck-section">
+        <h2>10. Feedback Control — Work in Progress</h2>
+        <p>
+            The next phase is to select the feedback implementation that best balances
+            regulation performance, complexity, flexibility, and available hardware.
+            I am currently investigating <strong>analog</strong>, <strong>digital hardware</strong>,
+            and <strong>embedded microcontroller</strong> control rather than treating one approach
+            as already finalized.
+        </p>
+        <table class="buck-table">
+            <thead><tr><th>Approach</th><th>Potential advantages</th><th>Tradeoffs to investigate</th></tr></thead>
+            <tbody>
+                <tr><td><strong>Analog</strong><br />Compensator / controller IC</td>
+                    <td>Continuous-time response, no ADC quantization or firmware execution delay, established PWM control architectures</td>
+                    <td>Compensation component selection, tuning flexibility, additional analog circuitry</td></tr>
+                <tr><td><strong>Digital hardware</strong><br />FPGA or dedicated digital controller</td>
+                    <td>Deterministic timing, precise PWM/dead-time logic, configurable control structure</td>
+                    <td>Development complexity, sensing interface, fixed-point precision and resource use</td></tr>
+                <tr><td><strong>Embedded</strong><br />MCU / ATmega328P-class</td>
+                    <td>Software-adjustable gains, logging, telemetry, straightforward iteration</td>
+                    <td>ADC sampling rate, computation latency, PWM resolution, interrupt timing, reliable complementary gate generation</td></tr>
+            </tbody>
+        </table>
+        <p>
+            Embedded control is itself a form of digital control; I distinguish it here from
+            dedicated digital hardware because their timing, development, and integration
+            tradeoffs are different.
+        </p>
+        <h3>Candidate Voltage-Mode Feedback Loop</h3>
+        <p>
+            Regardless of implementation, a voltage-mode controller would compare
+            V<sub>out</sub> against a reference V<sub>ref</sub> and adjust the duty command.
+            In a sampled PI implementation, for example:
+        </p>
+        <div class="buck-equation">
+            e[k] = V<sub>ref</sub> − V<sub>out</sub>[k]<br />
+            I[k] = I[k−1] + K<sub>i</sub>T<sub>s</sub>e[k]<br />
+            D[k] = sat(K<sub>p</sub>e[k] + I[k])
+            <span class="note">Illustrative controller form only; no final gains or closed-loop performance are claimed.</span>
+        </div>
+        <p>
+            Duty-cycle limiting and anti-windup are important considerations, because an
+            integrator can continue accumulating error when the actuator is saturated.
+            The controller's sampling rate must also be chosen with the switching frequency,
+            converter poles, phase margin, ADC resolution, and processing delay in mind.
+        </p>
+        <p>
+            Before selecting a final approach, I plan to characterize the duty-to-output
+            response, define voltage-regulation and transient-response targets, and compare
+            each implementation's achievable bandwidth, power consumption, protection
+            features, and design complexity. This control comparison is the active next
+            stage of the project rather than a completed result.
+        </p>
+        <figure class="buck-figure">
+        <a href="../images/projects/synchronous-buck/control-block-diagram.png" target="_blank" rel="noopener"><img src="../images/projects/synchronous-buck/control-block-diagram.png" alt="Proposed feedback loop for synchronous buck converter" loading="lazy" /></a>
+        <div class="buck-image-missing">Feedback concept: <code>control-block-diagram.png</code></div>
+        <figcaption>Proposed feedback architecture: output sensing, error calculation, compensation, PWM, and MOSFET gate drive.</figcaption>
+    </figure>
+    </section>
+
+    <section id="references" class="buck-section">
+        <h2>References and Further Reading</h2>
+        <ol class="buck-references">
+            <li>Philip T. Krein, <em>Elements of Power Electronics</em> — converter operation, passive-component selection, and averaged modeling.</li>
+            <li>ATmega328P / Arduino Timer1 documentation — hardware PWM and timing considerations.</li>
+            <li>Relevant MOSFET and gate-driver datasheets — switching times, gate charge, blocking ratings, and thermal limits.</li>
+        </ol>
+        <p><a href="../projects.html" class="button small">Back to Projects</a></p>
+    </section>
+
+            </div></section>
+        </article>
+        <footer id="footer">
+            <ul class="icons">
+                <li><a href="https://www.linkedin.com/in/jyoukhana8580/" class="icon brands fa-linkedin" target="_blank" rel="noopener"><span class="label">LinkedIn</span></a></li>
+                <li><a href="mailto:jjy45321@gmail.com" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
+                <li><a href="https://github.com/jyoukhana4" class="icon brands fa-github" target="_blank" rel="noopener"><span class="label">GitHub</span></a></li>
+            </ul>
+            <ul class="copyright"><li>&copy; John Youkhana</li><li>Design: <a href="https://html5up.net">HTML5 UP</a></li></ul>
+        </footer>
+    </div>
+    <script src="../assets/js/jquery.min.js"></script>
+    <script src="../assets/js/jquery.scrollex.min.js"></script>
+    <script src="../assets/js/jquery.scrolly.min.js"></script>
+    <script src="../assets/js/skel.min.js"></script>
+    <script src="../assets/js/browser.min.js"></script>
+    <script src="../assets/js/breakpoints.min.js"></script>
+    <script src="../assets/js/util.js"></script>
+    <script src="../assets/js/main.js"></script>
+    <script>
+        document.querySelectorAll('.buck-figure img').forEach(function (img) {
+            function showPlaceholder() { img.closest('.buck-figure').classList.add('is-missing'); }
+            img.addEventListener('error', showPlaceholder);
+            if (img.complete && img.naturalWidth === 0) showPlaceholder();
+        });
+    </script>
+</body>
+</html>

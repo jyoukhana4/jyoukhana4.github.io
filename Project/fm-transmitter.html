@@ -1,0 +1,523 @@
+<!DOCTYPE HTML>
+<!--
+    Spectral by HTML5 UP
+    html5up.net | @ajlkn
+    Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html lang="en">
+<head>
+    <title>FM Transmitter | John Youkhana</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Design and characterization of a two-layer MAX2606 FM voice transmitter, including VCO tuning-network calculations, RF PCB layout, and spectrum analysis." />
+    <link rel="stylesheet" href="../assets/css/main.css" />
+    <style>
+        /* Styles scoped to this project; the site's Spectral styles remain intact. */
+        .fm-page { max-width: 1050px; margin: 0 auto; }
+        .fm-lede { font-size: 1.12em; line-height: 1.85; }
+        .fm-meta { font-size: 0.89em; letter-spacing: 0.08em; text-transform: uppercase; color: #555; }
+        .fm-metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1em; margin: 2em 0; }
+        .fm-metric { border: 1px solid #d7dade; border-radius: 6px; padding: 1.15em; background: #fff; }
+        .fm-metric strong { display: block; font-size: 1.55em; line-height: 1.25; color: #24495b; margin: 0.25em 0; }
+        .fm-metric span { display: block; font-size: 0.78em; text-transform: uppercase; letter-spacing: 0.08em; color: #646d74; }
+        .fm-metric small { display: block; color: #666; line-height: 1.6; }
+        .fm-toc { border: 1px solid #dce2e7; border-left: 4px solid #32748b; padding: 1.2em 1.5em; margin: 2.5em 0; background: #f8fafb; }
+        .fm-toc h3 { margin-bottom: 0.7em; }
+        .fm-toc ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5em 1.5em; padding-left: 1.2em; margin: 0; }
+        .fm-toc li { padding-left: 0.2em; margin: 0; }
+        .fm-section { padding-top: 1.2em; margin-top: 2.7em; border-top: 1px solid #dce1e5; scroll-margin-top: 5.5em; }
+        .fm-section h2 { margin-bottom: 0.8em; }
+        .fm-section h3 { margin-top: 2em; }
+        .fm-diagram { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.55em; margin: 1.6em 0; }
+        .fm-diagram > div { background: #eef5f7; border: 1px solid #bdd0d8; border-radius: 5px; padding: 1em 0.55em; text-align: center; }
+        .fm-diagram strong { display: block; font-size: 0.88em; color: #254f63; }
+        .fm-diagram small { display: block; margin-top: 0.35em; color: #50616b; font-size: 0.73em; line-height: 1.5; }
+        .fm-equation { background: #f2f5f7; border-left: 3px solid #32748b; border-radius: 2px; padding: 0.95em 1.2em; margin: 1.05em 0; font-family: Georgia, "Times New Roman", serif; font-size: 1.07em; line-height: 1.7; overflow-x: auto; }
+        .fm-equation .note { display: block; font: 0.8em/1.6 Arial, sans-serif; color: #5d6870; margin-top: 0.35em; }
+        .fm-figure { margin: 1.7em 0 2.1em; }
+        .fm-figure a { display: block; border-bottom: 0; }
+        .fm-figure img { display: block; width: 100%; height: auto; max-height: 690px; object-fit: contain; background: #fff; border: 1px solid #dce1e5; border-radius: 4px; }
+        .fm-figure figcaption { margin-top: 0.6em; font-size: 0.87em; color: #666; line-height: 1.6; }
+        .fm-image-missing { display: none; padding: 2.5em 1.5em; text-align: center; border: 1px dashed #aebbc2; background: #f8fafb; color: #687780; border-radius: 4px; }
+        .fm-figure.is-missing > a { display: none; }
+        .fm-figure.is-missing .fm-image-missing { display: block; }
+        .fm-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.35em; }
+        .fm-grid .fm-figure { margin-top: 0; }
+        .fm-table { width: 100%; margin: 1.3em 0 1.8em; }
+        .fm-table th { white-space: nowrap; }
+        .fm-callout { background: #f7f9fa; border: 1px solid #dce1e5; border-radius: 5px; padding: 1.2em 1.4em; margin: 1.5em 0; }
+        .fm-callout p:last-child { margin-bottom: 0; }
+        .fm-small { font-size: 0.88em; color: #646d74; }
+        .fm-references li { margin-bottom: 0.55em; }
+        @media screen and (max-width: 736px) {
+            .fm-metrics { grid-template-columns: 1fr; }
+            .fm-toc ul { grid-template-columns: 1fr; }
+            .fm-diagram { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .fm-grid { grid-template-columns: 1fr; }
+            .fm-metric strong { font-size: 1.4em; }
+            .fm-table { display: block; overflow-x: auto; }
+        }
+    </style>
+</head>
+<body class="is-preload">
+    <div id="page-wrapper">
+        <!-- Shared site header -->
+        <header id="header">
+            <h1><a href="../index.html">John Youkhana</a></h1>
+            <nav id="nav">
+                <ul>
+                    <li class="special">
+                        <a href="#menu" class="menuToggle"><span>Menu</span></a>
+                        <div id="menu">
+                            <ul>
+                                <li><a href="../index.html">Home</a></li>
+                                <li><a href="../aboutme.html">About Me</a></li>
+                                <li><a href="../projects.html">Projects</a></li>
+                                <li><a href="../coursework.html">Courses</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+        </header>
+
+        <article id="main">
+            <header>
+                <h2>FM Voice Transmitter</h2>
+                <p>MAX2606 VCO &nbsp;|&nbsp; RF PCB Design &nbsp;|&nbsp; Frequency Modulation</p>
+            </header>
+
+            <section class="wrapper style5">
+                <div class="inner fm-page">
+                    <p class="fm-meta">Independent Project &nbsp;·&nbsp; 2026 &nbsp;·&nbsp; In Progress</p>
+                    <p class="fm-lede">
+                        I designed a two-layer FM transmitter PCB around the MAX2606 voltage-controlled
+                        oscillator (VCO). The circuit uses an adjustable DC tuning voltage to establish
+                        the carrier frequency and an electret microphone to modulate that carrier with
+                        voice. The design includes a regulated 3.3V supply, an SMA output for RF testing,
+                        and a PCB layout developed with particular attention to the oscillator's
+                        sensitivity to parasitic capacitance.
+                    </p>
+
+                    <div class="fm-metrics" aria-label="Reported project results">
+                        <div class="fm-metric">
+                            <span>Carrier tuning range</span>
+                            <strong>97.5–105.5 MHz</strong>
+                            <small>Reported prototype range</small>
+                        </div>
+                        <div class="fm-metric">
+                            <span>RF output power</span>
+                            <strong>−18 to −16 dBm</strong>
+                            <small>Measured at the RF output</small>
+                        </div>
+                        <div class="fm-metric">
+                            <span>Modulation</span>
+                            <strong>Voice FM</strong>
+                            <small>Electret microphone input</small>
+                        </div>
+                    </div>
+
+                    <!-- Replace filenames below with the actual image names in your folder. -->
+                    <figure class="fm-figure">
+                        <a href="../images/projects/fm-transmitter/pcb-3d.png" target="_blank" rel="noopener">
+                            <img src="../images/projects/fm-transmitter/pcb-3d.png" alt="Three-dimensional rendering of the MAX2606 FM transmitter PCB" loading="lazy" />
+                        </a>
+                        <div class="fm-image-missing">PCB 3D render: <code>pcb-3d.png</code></div>
+                        <figcaption>3D model of the FM transmitter PCB, designed in KiCad.</figcaption>
+                    </figure>
+
+                    <div class="fm-toc">
+                        <h3>Project Sections</h3>
+                        <ul>
+                            <li><a href="#architecture">System architecture</a></li>
+                            <li><a href="#vco">VCO and inductor selection</a></li>
+                            <li><a href="#tuning">TUNE voltage-divider design</a></li>
+                            <li><a href="#audio">Microphone and FM modulation</a></li>
+                            <li><a href="#power-rf">Power supply and RF output</a></li>
+                            <li><a href="#layout">RF PCB layout</a></li>
+                            <li><a href="#testing">Testing and results</a></li>
+                            <li><a href="#improvements">Design tradeoffs and next steps</a></li>
+                        </ul>
+                    </div>
+
+                    <section id="architecture" class="fm-section">
+                        <h2>1. System Architecture</h2>
+                        <p>
+                            The transmitter was divided into functional blocks so that the carrier generation,
+                            tuning, modulation, and output could be designed and evaluated separately. The
+                            MAX2606 generates the carrier, while the TUNE pin receives a DC bias that selects
+                            the center frequency and an AC audio signal that varies its instantaneous frequency.
+                        </p>
+                        <div class="fm-diagram" aria-label="Functional blocks in the transmitter">
+                            <div><strong>DC input</strong><small>External power</small></div>
+                            <div><strong>3.3V LDO</strong><small>Regulated supply</small></div>
+                            <div><strong>MAX2606</strong><small>LC oscillator</small></div>
+                            <div><strong>RF coupling</strong><small>DC-blocking capacitor</small></div>
+                            <div><strong>SMA output</strong><small>Test equipment</small></div>
+                        </div>
+                        <p>
+                            Two additional inputs feed the oscillator's TUNE node: an adjustable resistive
+                            divider sets the DC tuning voltage, and the microphone supplies the audio signal
+                            through a coupling capacitor. This arrangement implements direct frequency
+                            modulation without requiring a separate RF mixer.
+                        </p>
+                        <figure class="fm-figure">
+                            <a href="../images/projects/fm-transmitter/schematic.png" target="_blank" rel="noopener">
+                                <img src="../images/projects/fm-transmitter/schematic.png" alt="Complete MAX2606 FM transmitter schematic" loading="lazy" />
+                            </a>
+                            <div class="fm-image-missing">Full KiCad schematic: <code>schematic.png</code></div>
+                            <figcaption>Complete circuit schematic showing the regulator, microphone bias, tuning network, oscillator, and RF output.</figcaption>
+                        </figure>
+                    </section>
+
+                    <section id="vco" class="fm-section">
+                        <h2>2. VCO and Inductor Selection</h2>
+                        <p>
+                            I selected the Analog Devices MAX2606 because it integrates a voltage-controlled
+                            oscillator with an internal varactor and supports operation in the frequency range
+                            needed for an FM broadcast-band project. This reduced the number of external
+                            parts needed to build a tunable RF oscillator.
+                        </p>
+                        <p>
+                            The approximate resonant frequency follows the familiar LC relationship,
+                            although the actual capacitance includes the internal varactor and PCB parasitics:
+                        </p>
+                        <div class="fm-equation">f<sub>0</sub> ≈ 1 / (2π√(LC))</div>
+                        <p>
+                            Using the MAX2606 datasheet's inductance-versus-frequency curve, I selected a
+                            nominal 390nH inductor to place the carrier near the 100MHz region. I chose the
+                            <strong>Coilcraft 0805HP-391XGRC</strong> rather than selecting an inductor based
+                            on inductance alone. At RF frequencies, the inductor's quality factor (Q) and
+                            self-resonant frequency are also important.
+                        </p>
+                        <table class="fm-table">
+                            <thead><tr><th>Inductor parameter</th><th>Selected part</th><th>Design significance</th></tr></thead>
+                            <tbody>
+                                <tr><td>Inductance</td><td>390nH ±2%</td><td>Establishes approximate center frequency</td></tr>
+                                <tr><td>Q at 100MHz</td><td>52 typical</td><td>Reduces resonant-tank losses</td></tr>
+                                <tr><td>Self-resonant frequency</td><td>700MHz typical</td><td>Well above intended carrier frequency</td></tr>
+                                <tr><td>Package</td><td>0805 SMD</td><td>Compact RF layout</td></tr>
+                            </tbody>
+                        </table>
+                        <p>
+                            The MAX2606 recommends an external inductor Q of at least 35. The selected part's
+                            typical Q of 52 at 100MHz made it a promising choice, while its high typical
+                            self-resonant frequency helped ensure it behaved inductively near the operating band.
+                            I also checked the manufacturer's recommended land pattern rather than assuming
+                            every 0805 inductor uses identical pads.
+                        </p>
+                    </section>
+
+                    <section id="tuning" class="fm-section">
+                        <h2>3. Designing the TUNE Voltage Divider</h2>
+                        <p>
+                            A central design task was determining how to generate the voltage applied to the
+                            MAX2606's TUNE pin. The TUNE voltage changes the capacitance of the oscillator's
+                            internal varactor: increasing the tuning voltage generally decreases capacitance
+                            and increases carrier frequency.
+                        </p>
+                        <p>
+                            The datasheet characterizes the device over a <strong>0.4–2.4V TUNE range</strong>.
+                            A potentiometer directly connected between 3.3V and ground would sweep from
+                            0–3.3V, exceeding that characterized range. Instead, I used a 10kΩ potentiometer
+                            with fixed resistors above and below it to constrain the wiper voltage.
+                        </p>
+                        <h3>Deriving the Resistor Values</h3>
+                        <p>
+                            I first set the target limits to 0.4V and 2.4V, and selected a 10kΩ
+                            potentiometer. The full 10kΩ track should drop the difference between the two
+                            target voltages, or 2.0V. Assuming negligible DC current into TUNE:
+                        </p>
+                        <div class="fm-equation">
+                            I<sub>divider</sub> = (2.4V − 0.4V) / 10kΩ = 0.200mA
+                            <span class="note">Target current through the entire series divider.</span>
+                        </div>
+                        <p>
+                            The lower fixed resistor must drop 0.4V at that current, and the upper fixed
+                            resistor must drop the remaining 0.9V from the 3.3V supply:
+                        </p>
+                        <div class="fm-equation">
+                            R<sub>bottom</sub> = 0.4V / 0.200mA = 2.0kΩ<br />
+                            R<sub>top</sub> = (3.3V − 2.4V) / 0.200mA = 4.5kΩ
+                        </div>
+                        <p>
+                            I selected a standard <strong>4.7kΩ</strong> upper resistor instead of the
+                            calculated 4.5kΩ. The final series network is therefore 4.7kΩ + 10kΩ + 2kΩ,
+                            for a total resistance of 16.7kΩ.
+                        </p>
+                        <table class="fm-table">
+                            <thead><tr><th>Element</th><th>Selected value</th></tr></thead>
+                            <tbody>
+                                <tr><td>Upper resistor</td><td>4.7kΩ</td></tr>
+                                <tr><td>Potentiometer</td><td>10kΩ</td></tr>
+                                <tr><td>Lower resistor</td><td>2.0kΩ</td></tr>
+                                <tr><td>Supply voltage</td><td>3.3V</td></tr>
+                            </tbody>
+                        </table>
+                        <h3>Checking the Resulting Voltage Range</h3>
+                        <p>
+                            At the lowest wiper position, only the 2kΩ resistor is below the wiper. At the
+                            highest position, the full 10kΩ potentiometer and the 2kΩ resistor are below it:
+                        </p>
+                        <div class="fm-equation">
+                            V<sub>min</sub> = 3.3 × (2 / 16.7) = <strong>0.395V</strong><br />
+                            V<sub>max</sub> = 3.3 × (12 / 16.7) = <strong>2.371V</strong><br />
+                            V<sub>mid</sub> = 3.3 × (7 / 16.7) = <strong>1.383V</strong>
+                        </div>
+                        <p>
+                            The divider current is approximately 3.3V / 16.7kΩ = <strong>198µA</strong>.
+                            This arrangement gives nearly the full characterized tuning-voltage range while
+                            preventing the potentiometer from applying the entire supply voltage to TUNE.
+                            These are ideal divider calculations; resistor tolerances and TUNE loading can
+                            change the exact endpoints slightly.
+                        </p>
+                        <figure class="fm-figure">
+                            <a href="../images/projects/fm-transmitter/tuning-network.png" target="_blank" rel="noopener">
+                                <img src="../images/projects/fm-transmitter/tuning-network.png" alt="Close-up of the 4.7kΩ, 10kΩ potentiometer, and 2kΩ TUNE voltage divider" loading="lazy" />
+                            </a>
+                            <div class="fm-image-missing">Tuning-divider close-up: <code>tuning-network.png</code></div>
+                            <figcaption>Carrier-tuning network. The potentiometer wiper provides approximately 0.395–2.371V to the MAX2606 TUNE input.</figcaption>
+                        </figure>
+                        <h3>Relating the Tuning Voltage to Carrier Frequency</h3>
+                        <p>
+                            I used the MAX2606 datasheet's frequency-tuning specifications to establish an
+                            initial expectation for the oscillator. For an assumed nominal frequency of
+                            102MHz, the specified relative limits of −4.4% and +3.4% at 25°C correspond to:
+                        </p>
+                        <div class="fm-equation">
+                            f<sub>low</sub> = 102MHz × (1 − 0.044) ≈ 97.5MHz<br />
+                            f<sub>high</sub> = 102MHz × (1 + 0.034) ≈ 105.5MHz
+                        </div>
+                        <p class="fm-small">
+                            These figures are an initial datasheet-based estimate, not an exact frequency
+                            prediction for a specific PCB. The frequency depends on the effective tank
+                            capacitance, inductance tolerance, temperature, and RF loading; the design's
+                            actual frequency range must be established through measurements.
+                        </p>
+                    </section>
+
+                    <section id="audio" class="fm-section">
+                        <h2>4. Microphone Input and Frequency Modulation</h2>
+                        <p>
+                            An electret microphone converts voice into a small time-varying electrical
+                            signal. I biased the microphone from the 3.3V supply through a 2.2kΩ resistor
+                            and connected its output to the tuning network through a 2.2µF coupling capacitor.
+                        </p>
+                        <p>
+                            The coupling capacitor blocks the microphone's DC operating voltage from
+                            disturbing the DC carrier-frequency setting, while allowing the audio waveform
+                            to be superimposed onto the TUNE pin's bias:
+                        </p>
+                        <div class="fm-equation">V<sub>TUNE</sub>(t) = V<sub>DC</sub> + v<sub>audio</sub>(t)</div>
+                        <p>
+                            Over a small portion of the VCO tuning curve, the instantaneous frequency can
+                            be approximated as:
+                        </p>
+                        <div class="fm-equation">
+                            f<sub>i</sub>(t) ≈ f<sub>c</sub> + K<sub>VCO</sub> · v<sub>audio</sub>(t)
+                            <span class="note">K<sub>VCO</sub> is local tuning sensitivity in Hz/V.</span>
+                        </div>
+                        <p>
+                            A larger audio signal produces greater frequency deviation. The modulation
+                            signal should therefore remain sufficiently small to avoid excessive deviation
+                            and distortion. The microphone bias, DC tuning voltage, and RF bypassing each
+                            serve separate purposes despite sharing the TUNE node.
+                        </p>
+                        <h3>Why the TUNE Bypass Capacitor Matters</h3>
+                        <p>
+                            I placed a 1nF C0G/NP0 capacitor between TUNE and ground, close to the MAX2606.
+                            The oscillator requires a low-impedance RF path at this node, but the lower-
+                            frequency audio waveform must still be able to affect its tuning voltage.
+                            An ideal 1nF capacitor has a reactance of approximately 159kΩ at 1kHz,
+                            compared with approximately 1.59Ω at 100MHz. Actual RF behavior also depends
+                            on the capacitor's parasitics and mounting geometry.
+                        </p>
+                    </section>
+
+                    <section id="power-rf" class="fm-section">
+                        <h2>5. Power Regulation and RF Output</h2>
+                        <h3>3.3V Regulated Supply</h3>
+                        <p>
+                            I used a Microchip MCP1703 3.3V low-dropout regulator to supply the oscillator.
+                            Because a VCO converts voltage changes into frequency changes, supply stability
+                            matters for frequency stability. The regulator circuit includes 2.2µF input and
+                            output capacitors, with additional high-frequency bypassing near the MAX2606's
+                            VCC pin to limit the effect of RF supply currents.
+                        </p>
+                        <h3>Differential Outputs and SMA Test Connection</h3>
+                        <p>
+                            The MAX2606 provides complementary open-collector RF outputs. I used 1kΩ
+                            pull-up resistors to establish their DC operating conditions and routed OUT+
+                            through a 1nF DC-blocking capacitor to an edge-mounted SMA connector.
+                            This connector provides a convenient interface to a 50Ω spectrum analyzer.
+                        </p>
+                        <p>
+                            Although the SMA connector provides a convenient RF test connection, the
+                            MAX2606 output is not inherently matched to the spectrum analyzer's 50Ω
+                            input. The output coupling network and load impedance influence the RF
+                            power delivered to the instrument, so I did not assume maximum power
+                            transfer from the oscillator.
+                        </p>
+                    </section>
+
+                    <section id="layout" class="fm-section">
+                        <h2>6. RF PCB Layout</h2>
+                        <p>
+                            I laid out the circuit on a two-layer PCB with ground pours on both copper
+                            layers. Ground-stitching vias connect the planes and provide short return
+                            paths near components and along the RF output. The via grid used approximately
+                            3mm spacing with 0.6mm via diameters and 0.3mm drills.
+                        </p>
+                        <p>
+                            The resonant tank required special attention. Copper near the tank inductor
+                            creates parasitic capacitance, which changes the effective LC resonance and
+                            may shift the carrier frequency. I therefore used localized ground-plane
+                            keepouts near the VCO resonant tank, while preserving the required ground
+                            connections to the MAX2606 and bypass components.
+                        </p>
+                        <p>
+                            I also incorporated a localized ground-plane clearance at the SMA signal-pad
+                            transition to reduce excess shunt capacitance. Ground copper and vias remain
+                            near the connector's ground terminals to support the RF return path. These
+                            targeted clearances were limited to sensitive areas to balance parasitic
+                            capacitance against ground-return continuity.
+                        </p>
+                        <div class="fm-grid">
+                            <figure class="fm-figure">
+                                <a href="../images/projects/fm-transmitter/pcb-top.png" target="_blank" rel="noopener">
+                                    <img src="../images/projects/fm-transmitter/pcb-top.png" alt="Top layer FM transmitter PCB routing and components" loading="lazy" />
+                                </a>
+                                <div class="fm-image-missing">Top copper/layout: <code>pcb-top.png</code></div>
+                                <figcaption>Top-layer placement, routing, and ground stitching.</figcaption>
+                            </figure>
+                            <figure class="fm-figure">
+                                <a href="../images/projects/fm-transmitter/pcb-bottom.png" target="_blank" rel="noopener">
+                                    <img src="../images/projects/fm-transmitter/pcb-bottom.png" alt="Bottom copper ground plane and localized keepouts" loading="lazy" />
+                                </a>
+                                <div class="fm-image-missing">Bottom copper/layout: <code>pcb-bottom.png</code></div>
+                                <figcaption>Bottom-layer ground plane and localized RF keepout regions.</figcaption>
+                            </figure>
+                        </div>
+                        <div class="fm-callout">
+                            <p><strong>Layout tradeoff:</strong> Ground planes generally improve RF return
+                            continuity, but ground copper in the wrong place can add capacitance to the
+                            oscillator tank or SMA launch. The objective was to maintain a low-impedance
+                            return network while controlling parasitic coupling in the most sensitive areas.</p>
+                        </div>
+                    </section>
+
+                    <section id="testing" class="fm-section">
+                        <h2>7. Prototype Testing and Results</h2>
+                        <p>
+                            I characterized the transmitter with a spectrum analyzer connected to the
+                            SMA output. By changing the tuning potentiometer, I observed the carrier
+                            shift in frequency. The reported tuning range was approximately
+                            <strong>97.5–105.5MHz</strong>, with RF output power around
+                            <strong>−18 to −16dBm</strong> near a 102MHz carrier.
+                        </p>
+                        <p>
+                            The measured power may have been limited in part by an impedance mismatch
+                            between the MAX2606 output stage and the analyzer's 50Ω input. Such a
+                            mismatch can cause some available RF power to be reflected rather than
+                            delivered to the load. Losses in the coupling network and test connections
+                            may also contribute. Without an output impedance measurement or a
+                            before-and-after matching test, impedance mismatch remains a possible
+                            explanation rather than a confirmed cause of the measured power level.
+                        </p>
+                        <p>
+                            With the microphone active, the spectrum changed in response to voice input.
+                            These spectral changes were consistent with frequency modulation of the RF
+                            carrier. A controlled single-tone audio measurement would be a useful next
+                            step for quantifying peak frequency deviation and modulation index.
+                        </p>
+                        <div class="fm-grid">
+                            <figure class="fm-figure">
+                                <a href="../images/projects/fm-transmitter/spectrum-carrier.png" target="_blank" rel="noopener">
+                                    <img src="../images/projects/fm-transmitter/spectrum-carrier.png" alt="Spectrum analyzer showing the FM transmitter carrier" loading="lazy" />
+                                </a>
+                                <div class="fm-image-missing">Carrier spectrum: <code>spectrum-carrier.png</code></div>
+                                <figcaption>Carrier-frequency and output-power measurement.</figcaption>
+                            </figure>
+                            <figure class="fm-figure">
+                                <a href="../images/projects/fm-transmitter/spectrum-voice.png" target="_blank" rel="noopener">
+                                    <img src="../images/projects/fm-transmitter/spectrum-voice.png" alt="Spectrum analyzer showing voice-modulated RF signal" loading="lazy" />
+                                </a>
+                                <div class="fm-image-missing">Voice modulation spectrum: <code>spectrum-voice.png</code></div>
+                                <figcaption>RF spectrum with voice-driven frequency modulation.</figcaption>
+                            </figure>
+                        </div>
+                        <p class="fm-small">
+                            RF power values refer to the measurement point and setup used for characterization;
+                            the radiated power of an antenna-connected system is a separate quantity.
+                        </p>
+                    </section>
+
+                    <section id="improvements" class="fm-section">
+                        <h2>8. Design Tradeoffs and Next Steps</h2>
+                        <p>
+                            This project reinforced how oscillator design, low-frequency bias circuitry,
+                            component parasitics, and PCB geometry all affect the measured RF output.
+                            Direct VCO modulation made the circuit compact, but without a phase-locked
+                            loop, carrier frequency remains sensitive to supply disturbances,
+                            temperature, and component tolerances.
+                        </p>
+                        <p>
+                            Potential improvements include measuring the full frequency-versus-voltage
+                            tuning curve, calibrating frequency deviation with a known audio tone,
+                            characterizing harmonics and phase noise, and evaluating a dedicated
+                            output-matching and low-pass filtering network. An audio gain/limiting stage
+                            could also provide better control of modulation depth.
+                        </p>
+                        <p>
+                            This transmitter was developed as an RF design and measurement project.
+                            Any on-air operation in the FM broadcast band must meet applicable radio
+                            regulations and emission limits.
+                        </p>
+                    </section>
+
+                    <section id="references" class="fm-section">
+                        <h2>References</h2>
+                        <ol class="fm-references">
+                            <li><a href="https://www.analog.com/media/en/technical-documentation/data-sheets/MAX2605-MAX2609.pdf" target="_blank" rel="noopener">Analog Devices, MAX2605–MAX2609 Datasheet</a></li>
+                            <li><a href="https://www.coilcraft.com/en-us/products/rf/ceramic-core-chip-inductors/0805-%282012%29/0805hp/0805hp-391/" target="_blank" rel="noopener">Coilcraft, 0805HP-391 RF Inductor</a></li>
+                            <li><a href="https://www.microchip.com/en-us/product/MCP1703" target="_blank" rel="noopener">Microchip, MCP1703 Low-Dropout Regulator</a></li>
+                        </ol>
+                        <p><a href="../projects.html" class="button small">Back to Projects</a></p>
+                    </section>
+                </div>
+            </section>
+        </article>
+
+        <!-- Shared site footer -->
+        <footer id="footer">
+            <ul class="icons">
+                <li><a href="https://www.linkedin.com/in/jyoukhana8580/" class="icon brands fa-linkedin" target="_blank" rel="noopener"><span class="label">LinkedIn</span></a></li>
+                <li><a href="mailto:jjy45321@gmail.com" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
+                <li><a href="https://github.com/jyoukhana4" class="icon brands fa-github" target="_blank" rel="noopener"><span class="label">GitHub</span></a></li>
+            </ul>
+            <ul class="copyright">
+                <li>&copy; John Youkhana</li>
+                <li>Design: <a href="https://html5up.net">HTML5 UP</a></li>
+            </ul>
+        </footer>
+    </div>
+
+    <!-- Shared site scripts -->
+    <script src="../assets/js/jquery.min.js"></script>
+    <script src="../assets/js/jquery.scrollex.min.js"></script>
+    <script src="../assets/js/jquery.scrolly.min.js"></script>
+    <script src="../assets/js/skel.min.js"></script>
+    <script src="../assets/js/browser.min.js"></script>
+    <script src="../assets/js/breakpoints.min.js"></script>
+    <script src="../assets/js/util.js"></script>
+    <script src="../assets/js/main.js"></script>
+    <script>
+        // Missing image files show labeled placeholders instead of broken-image icons.
+        document.querySelectorAll('.fm-figure img').forEach(function (img) {
+            function showPlaceholder() { img.closest('.fm-figure').classList.add('is-missing'); }
+            img.addEventListener('error', showPlaceholder);
+            if (img.complete && img.naturalWidth === 0) showPlaceholder();
+        });
+    </script>
+</body>
+</html>
