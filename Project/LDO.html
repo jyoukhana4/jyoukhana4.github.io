@@ -223,13 +223,13 @@
                     <p>Load regulation measures how much the output voltage changes as the load current changes while the input voltage is held fixed. In slope form, it can be expressed as:</p>
                     <div class="equation">Load regulation = |ΔV<sub>OUT</sub> / ΔI<sub>LOAD</sub>|</div>
                     <p>The simulated value of <strong>13.8µV/mA</strong> was below the 50µV/mA maximum specified for the project. This indicates that the feedback loop successfully corrected for load-dependent output-voltage changes in the evaluated DC sweep.</p>
-                    <figure class="figure"><a href="../images/projects/ldo/loadreg.png" target="_blank" rel="noopener noreferrer"><img src="../images/projects/ldo/loadreg.png" alt="Cadence DC load regulation sweep showing a small decrease in output voltage with increasing load current" loading="lazy" /></a><figcaption>DC load-regulation simulation from the project report.</figcaption></figure>
+                    <figure class="figure"><a href="../images/projects/LDO/loadreg.png" target="_blank" rel="noopener noreferrer"><img src="../images/projects/ldo/loadreg.png" alt="Cadence DC load regulation sweep showing a small decrease in output voltage with increasing load current" loading="lazy" /></a><figcaption>DC load-regulation simulation from the project report.</figcaption></figure>
 
                     <h4>DC Line Regulation</h4>
                     <p>Line regulation describes how sensitively the regulated output responds to changes in the input supply. A smaller value indicates that the feedback system is better able to suppress slow variations in VIN.</p>
                     <div class="equation">Line regulation = |ΔV<sub>OUT</sub> / ΔV<sub>IN</sub>|</div>
                     <p>We obtained approximately <strong>55µV/V</strong>, substantially below the project maximum of 500µV/V. This result is consistent with the high loop gain provided by the folded-cascode amplifier.</p>
-                    <figure class="figure"><a href="../images/projects/ldo/linereg.png" target="_blank" rel="noopener noreferrer"><img src="../images/projects/ldo/linereg.png" alt="Cadence DC line regulation sweep" loading="lazy" /></a><figcaption>DC line-regulation simulation from the project report.</figcaption></figure>
+                    <figure class="figure"><a href="../images/projects/LDO/linereg.png" target="_blank" rel="noopener noreferrer"><img src="../images/projects/ldo/linereg.png" alt="Cadence DC line regulation sweep" loading="lazy" /></a><figcaption>DC line-regulation simulation from the project report.</figcaption></figure>
 
                     <h4>Power-Supply Rejection</h4>
                     <p>Power-supply rejection measures how strongly input-supply ripple appears at the output. Unlike DC line regulation, this is a frequency-dependent result and is especially relevant for powering sensitive analog circuits.</p>
