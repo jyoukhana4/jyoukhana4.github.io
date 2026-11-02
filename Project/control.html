@@ -1,109 +1,309 @@
 <!DOCTYPE HTML>
 <!--
-	Spectral by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+    Spectral by HTML5 UP
+    html5up.net | @ajlkn
+    Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
 -->
 <html lang="en">
-	<head>
-		<title>Control Systems Project</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<link rel="stylesheet" href="../assets/css/main.css" />
-    </head>
-	<body>
+<head>
+    <title>Reaction Wheel Pendulum | John Youkhana</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Design and implementation of an observer-based control system for a reaction wheel pendulum using MATLAB/Simulink and a TI C2000 controller." />
+    <link rel="stylesheet" href="../assets/css/main.css" />
+    <style>
+        /* Project-specific styling layered on top of HTML5 UP Spectral. */
+        #rwp-project .inner { max-width: 1000px; }
+        #rwp-project h3 { margin-top: 2.35em; margin-bottom: 0.75em; }
+        #rwp-project h4 { margin-top: 1.8em; margin-bottom: 0.55em; }
+        #rwp-project p { line-height: 1.8; }
+        #rwp-project .lead { font-size: 1.1em; line-height: 1.8; }
+        #rwp-project .eyebrow { text-transform: uppercase; letter-spacing: .13em; font-size: .72em; font-weight: 700; color: #667; }
+        #rwp-project .metrics { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 1em; margin: 1.5em 0 2.5em; }
+        #rwp-project .metric { border: 1px solid #dedee4; background: #f8f9fb; border-radius: .55em; padding: 1em; }
+        #rwp-project .metric .figure { display: block; color: #263d55; font-weight: 700; font-size: 1.25em; line-height: 1.3; }
+        #rwp-project .metric .label { display: block; color: #606674; font-size: .78em; line-height: 1.5; margin-top: .4em; }
+        #rwp-project .toc { border-left: 3px solid #527b93; background: #f6f8fa; padding: 1em 1.5em; margin: 1.8em 0; }
+        #rwp-project .toc h3 { margin: 0 0 .7em; font-size: .95em; }
+        #rwp-project .toc ul { columns: 2; margin-bottom: 0; padding-left: 1.3em; }
+        #rwp-project .toc li { margin: 0 0 .35em; break-inside: avoid; }
+        #rwp-project .toc a { border-bottom: 0; }
+        #rwp-project .equation { background: #f6f8fa; border-left: 3px solid #9aaeba; padding: 1em 1.15em; margin: 1em 0 1.4em; line-height: 1.9; text-align: center; overflow-x: auto; font-family: Georgia, 'Times New Roman', serif; font-size: 1.1em; }
+        #rwp-project .equation small { display:block; font-family: inherit; font-size: .75em; text-align: right; color: #666; }
+        #rwp-project .note { background: #f4f6f8; border-left: 3px solid #567d91; padding: 1em 1.2em; margin: 1.6em 0; }
+        #rwp-project .note p { margin-bottom: 0; }
+        #rwp-project .project-figure { margin: 2.2em 0; text-align: center; }
+        #rwp-project .project-figure img { max-width: 100%; height: auto; display: block; margin: 0 auto; border: 1px solid #e0e3e8; border-radius: .35em; }
+        #rwp-project .project-figure figcaption { margin-top: .7em; color: #63666e; font-size: .87em; line-height: 1.55; text-align: center; }
+        #rwp-project .figure-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4em; align-items: start; }
+        #rwp-project .figure-row .project-figure { margin: .65em 0 1.6em; }
+        #rwp-project table { width: 100%; }
+        #rwp-project td, #rwp-project th { vertical-align: top; }
+        #rwp-project .chip-row { display:flex; gap:.5em; flex-wrap:wrap; margin: 0 0 1.7em; }
+        #rwp-project .chip { background:#eef2f5; border-radius:100px; color:#344d60; font-size:.75em; padding:.25em .75em; }
+        #rwp-project .block-steps { display: grid; grid-template-columns: repeat(4,1fr); gap: .5em; margin: 1.4em 0 1.9em; }
+        #rwp-project .block-step { background: #eaf0f3; color: #34495e; padding: .9em .45em; text-align:center; font-size: .83em; border-radius: .4em; display: flex; align-items: center; justify-content: center; line-height: 1.5; min-height: 70px; }
+        #rwp-project .report-link { margin: 2em 0 1em; }
+        #rwp-project .report-link a { border-bottom: none; }
+        #rwp-project .report-link .button { margin-right: .5em; }
+        #rwp-project .divider { height: 1px; background: #e0e0e4; margin: 2.3em 0; }
+        @media screen and (max-width: 736px) {
+            #rwp-project .metrics { grid-template-columns: 1fr; gap: .6em; }
+            #rwp-project .figure-row { grid-template-columns: 1fr; }
+            #rwp-project .toc ul { columns: 1; }
+            #rwp-project .block-steps { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+<div id="page-wrapper">
+    <!-- Existing website header/navigation retained -->
+    <header id="header">
+        <h1><a href="../index.html">John Youkhana</a></h1>
+        <nav id="nav">
+            <ul>
+                <li class="special">
+                    <a href="#menu" class="menuToggle"><span>Menu</span></a>
+                    <div id="menu">
+                        <ul>
+                            <li><a href="../index.html">Home</a></li>
+                            <li><a href="../aboutme.html">About Me</a></li>
+                            <li><a href="../projects.html">Projects</a></li>
+                            <li><a href="../coursework.html">Courses</a></li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </header>
 
-		<!-- Page Wrapper -->
-			<div id="page-wrapper">
+    <article id="main">
+        <header>
+            <h2>Reaction Wheel Pendulum</h2>
+            <p>Modeling, State-Space Control, and Observer Design<br />ECE 486 — Control Systems · Spring 2026</p>
+        </header>
 
-				<!-- Header -->
-					<header id="header">
-						<h1><a href="../index.html">John Youkhana</a></h1>
-						<nav id="nav">
-							<ul>
-								<li class="special">
-									<a href="#menu" class="menuToggle"><span>Menu</span></a>
-									<div id="menu">
-										<ul>
-											<li><a href="../index.html">Home</a></li>
-											<li><a href="../aboutme.html">About Me</a></li>
-											<li><a href="../projects.html">Projects</a></li>
-											<li><a href="../coursework.html">Courses</a></li>
-										</ul>
-									</div>
-								</li>
-							</ul>
-						</nav>
-					</header>
+        <section class="wrapper style5" id="rwp-project">
+            <div class="inner">
+                <p class="eyebrow">MATLAB / Simulink · TI C2000 · Feedback Control</p>
+                <h2>Stabilizing an Underactuated Pendulum</h2>
+                <p class="lead">In ECE 486, my project partner and I developed and implemented a real-time controller for a reaction wheel pendulum. Rather than applying torque directly at the pendulum pivot, a DC motor accelerates a flywheel mounted at the end of the arm. The reaction torque moves the pendulum, creating a challenging underactuated system that must balance upright using only one motor.</p>
+                <p>Our work progressed from nonlinear dynamics and experimental system identification to state feedback, friction compensation, and observer-based estimation. The central challenge was not simply designing a controller that worked in simulation: it was designing one that behaved reliably with quantized encoder readings, noisy velocity estimates, motor friction, and real hardware.</p>
 
-				<!-- Main -->
-					<article id="main">
-						<header>
-							<h2>Reaction Wheel Pendulum</h2>
-							<p>Control Systems Project</p>
-						</header>
-						<section class="wrapper style5">
-							<div class="inner">
-                                <h3><a href="control.html">Reaction Wheel Pendulum</a></h3>
-                                <p><span class="image left"><a href="../images/projects/pendulum.jpg"><img src="../images/projects/pendulum.jpg" alt="" /></a></span>Control Systems Final Project</p>
-								<p>
-                                This project involved designing and implementing a real-time control system for a reaction wheel pendulum. The system consisted of a pendulum arm with a DC motor and flywheel mounted at the end. 
-                                Unlike a directly actuated pendulum, the pendulum itself was not driven by a motor at the pivot. Instead, control was achieved by 
-                                accelerating the reaction wheel, which produced an equal and opposite reaction torque on the pendulum. Optical encoders measured the pendulum angle and reaction wheel angle, while 
-                                the controller generated motor commands in real time using a TI C2000 board with MATLAB/Simulink.
-								</br>
-                                The project began with deriving a nonlinear dynamic model of the pendulum and reaction wheel system. The nonlinear model described the angular acceleration of the pendulum and the reaction wheel as functions of gravity, motor torque, and friction. 
-                                After deriving the equations of motion, we performed system identification to estimate key plant parameters, including the pendulum’s natural 
-                                frequency and the motor input gains relating the control command to pendulum and wheel acceleration. These parameters were then used to create a linearized state-space model around the inverted equilibrium, 
-                                where the pendulum is upright and naturally unstable.
-								</br>
-                                Using the linearized model, we designed a state-feedback controller to stabilize the pendulum in the inverted position. The final feedback controller used three states: pendulum angle deviation from upright, 
-                                pendulum angular velocity, and reaction wheel angular velocity. Absolute reaction wheel angle was intentionally ignored because the wheel’s angular position does not affect whether the pendulum is balanced; only
-                                its speed matters. Pole placement was used to choose feedback gains that moved the closed-loop poles to stable locations, allowing the controller to reject small disturbances and drive the pendulum back toward the upright equilibrium.
-                                </br>
-                                A major part of the project was bridging the gap between simulation and physical hardware. In simulation, the controller had access to clean state information, but on the real system the encoders only measured position.
-                                 Pendulum and wheel velocities had to be estimated from encoder signals, and simple derivative-based estimates were noisy due to encoder quantization. Small changes in measured angle could appear as large jumps in velocity, causing the controller to 
-                                overreact. To address this, we implemented a full-state observer that acted as a model-based estimator. The observer used the motor command, measured angles, and the linearized plant model to estimate the full state, including 
-                                smoother angular velocity estimates.
-                                </br>
-                                The observer was later improved by decoupling the pendulum and reaction wheel estimation into separate subsystems. This reduced unnecessary cross-coupling, where error in one encoder measurement could influence the state 
-                                estimate of the other subsystem. By allowing pendulum angle error to correct only pendulum states and wheel angle error to correct only wheel states, the observer became more robust to noise and model mismatch. 
-                                The final result was a more reliable hardware controller that demonstrated the importance of modeling, system identification, feedback control, observer design, and real-time embedded implementation. 
-                                This project strengthened my understanding of how control systems behave differently in simulation versus physical hardware, especially when friction, sensor noise, quantization, and actuator limits are present.
-                                </br>
-                                <h3><a href="/Reports/control.pdf">Project Report</a></h3>
-								<hr />
-								</br>
-								<p><span class="image"><a href="../images/projects/pendulum_observer.png"><img src="../images/projects/pendulum_observer.png" alt="" style="width: 100%; max-width: 1000px; height: auto;"/></a></span></p>
-								<p><span class="image"><a href="../images/projects/reactionwheel_block.png"><img src="../images/projects/reactionwheel_block.png" alt="" style="width: 100%; max-width: 1000px; height: auto;"/></a></span></p>		
-                                <p><span class="image"><a href="../images/projects/pendulum_threestate.png"><img src="../images/projects/pendulum_threestate.png" alt="" style="width: 100%; max-width: 1000px; height: auto;"/></a></span></p>								
-							</div>
-						</section>
-					</article>
+                <div class="chip-row">
+                    <span class="chip">Nonlinear modeling</span><span class="chip">Pole placement</span><span class="chip">Friction compensation</span><span class="chip">State observers</span><span class="chip">Embedded implementation</span>
+                </div>
 
-				<!-- Footer -->
-					<footer id="footer">
-						<ul class="icons">
-							<li><a href="https://www.linkedin.com/in/jyoukhana8580/" class="icon brands fa-linkedin" target="_blank"><span class="label">linkedin</span></a></li>
-							<li><a href="mailto:jjy45321@gmail.com" class="icon solid fa-envelope" target="_blank"><span class="label">Email</span></a></li>
-							<li><a href="https://github.com/jyoukhana4" class="icon brands fa-github" target="_blank"><span class="label">Github</span></a></li>
-						</ul>
-						<ul class="copyright">
-							<li>&copy; Untitled</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
-						</ul>
-					</footer>
+                <div class="metrics" aria-label="Key project facts">
+                    <div class="metric"><span class="figure">2 optical encoders</span><span class="label">5000 / 4000 ticks per revolution</span></div>
+                    <div class="metric"><span class="figure">3-state feedback</span><span class="label">Pendulum position and speed, plus wheel speed</span></div>
+                    <div class="metric"><span class="figure">C2000 hardware</span><span class="label">Simulink control deployed to the physical pendulum</span></div>
+                </div>
 
-			</div>
+                <figure class="project-figure">
+                    <svg viewBox="0 0 880 370" width="100%" role="img" aria-labelledby="schematic-title schematic-description" style="border:1px solid #e0e3e8;border-radius:.4em;background:#fbfcfd;max-width:880px;">
+                        <title id="schematic-title">Conceptual reaction wheel pendulum diagram</title>
+                        <desc id="schematic-description">A pendulum arm pivots at its base. A motor-driven flywheel at the far end applies reaction torque. Optical encoders measure pivot and rotor angles. The concept is not drawn to scale.</desc>
+                        <line x1="70" y1="311" x2="470" y2="311" stroke="#8193a2" stroke-width="4"/>
+                        <rect x="114" y="301" width="102" height="12" rx="3" fill="#4e687c"/>
+                        <circle cx="165" cy="294" r="11" fill="#4e687c"/>
+                        <line x1="165" y1="294" x2="340" y2="76" stroke="#394f5f" stroke-width="18" stroke-linecap="round"/>
+                        <circle cx="340" cy="76" r="50" fill="#e2eaf0" stroke="#3a647c" stroke-width="8"/>
+                        <circle cx="340" cy="76" r="31" fill="none" stroke="#7c97ac" stroke-width="4" stroke-dasharray="9 7"/>
+                        <circle cx="340" cy="76" r="12" fill="#344e61"/>
+                        <path d="M 397 41 A 76 76 0 0 1 407 109" stroke="#bc785c" stroke-width="4" fill="none"/>
+                        <path d="M 407 109 l -14 -6 l 14 -9 z" fill="#bc785c"/>
+                        <line x1="165" y1="294" x2="165" y2="75" stroke="#acbac5" stroke-width="2" stroke-dasharray="5 5"/>
+                        <path d="M 165 223 A 71 71 0 0 1 210 238" stroke="#648aa5" stroke-width="3" fill="none"/>
+                        <line x1="209" y1="238" x2="258" y2="217" stroke="#8699a8" stroke-width="1.5"/>
+                        <line x1="383" y1="52" x2="481" y2="41" stroke="#8699a8" stroke-width="1.5"/>
+                        <line x1="348" y1="146" x2="482" y2="177" stroke="#8699a8" stroke-width="1.5"/>
+                        <g font-family="Arial,sans-serif" fill="#273e50">
+                            <text x="498" y="45" font-size="19" font-weight="600">Reaction wheel</text>
+                            <text x="498" y="69" font-size="15">Driven by a DC motor</text>
+                            <text x="498" y="183" font-size="18" font-weight="600">Pendulum arm</text>
+                            <text x="498" y="208" font-size="15">Moved by reaction torque</text>
+                            <text x="275" y="226" font-size="17">θₚ</text>
+                            <text x="124" y="341" font-size="15">Pivot encoder</text>
+                            <text x="396" y="143" font-size="15" fill="#bc785c">Wheel torque</text>
+                            <text x="498" y="263" font-size="15">The controller reads encoder angles</text>
+                            <text x="498" y="287" font-size="15">and commands motor torque.</text>
+                            <text x="498" y="322" font-size="13" fill="#667786">Conceptual illustration — not to scale</text>
+                        </g>
+                    </svg>
+                    <figcaption>Conceptual overview of the reaction wheel pendulum. The actuator drives the wheel, not the pendulum pivot.</figcaption>
+                </figure>
 
-		<!-- Scripts -->
-			<script src="../assets/js/jquery.min.js"></script>
-			<script src="../assets/js/jquery.scrollex.min.js"></script>
-			<script src="../assets/js/jquery.scrolly.min.js"></script>
-			<script src="../assets/js/skel.min.js"></script>
-            <script src="../assets/js/browser.min.js"></script>
-			<script src="../assets/js/breakpoints.min.js"></script>
-			<script src="../assets/js/util.js"></script>
-			<script src="../assets/js/main.js"></script>
+                <!-- Optional existing photo from the user's previous website. Hide if not present. -->
+                <figure class="project-figure" id="hardware-photo">
+                    <a href="../images/projects/pendulum.jpg"><img src="../images/projects/pendulum.jpg" alt="Reaction wheel pendulum laboratory hardware" loading="lazy" onerror="this.closest('figure').style.display='none'" style="max-height:570px;object-fit:contain" /></a>
+                    <figcaption>Reaction wheel pendulum hardware.</figcaption>
+                </figure>
 
-	</body>
+                <nav class="toc" aria-label="Project sections">
+                    <h3>On this page</h3>
+                    <ul>
+                        <li><a href="#system">System and instrumentation</a></li>
+                        <li><a href="#model">Mathematical model</a></li>
+                        <li><a href="#identification">System identification</a></li>
+                        <li><a href="#feedback">Two- and three-state feedback</a></li>
+                        <li><a href="#friction">Friction compensation</a></li>
+                        <li><a href="#observer">Observer design</a></li>
+                        <li><a href="#switching">Up/down switching control</a></li>
+                        <li><a href="#testing">Simulation vs. hardware</a></li>
+                        <li><a href="#lessons">Results and takeaways</a></li>
+                    </ul>
+                </nav>
+
+                <h3 id="system">1. System and Instrumentation</h3>
+                <p>The reaction wheel pendulum has a stable hanging equilibrium, with the pendulum pointing downward (<i>θ</i><sub>p</sub> = 0), and an unstable inverted equilibrium (<i>θ</i><sub>p</sub> = π). Our main control objective was to balance the pendulum near the inverted position while avoiding uncontrolled wheel acceleration.</p>
+                <p>A 24V permanent-magnet DC motor spins the reaction wheel. Accelerating the wheel produces an equal and opposite torque on the pendulum, which is the only actuation available. Two optical encoders provide the measured angles: the fixed-base encoder measures pendulum angle at 5000 ticks/revolution, and the motor-shaft encoder measures rotor angle relative to the arm at 4000 ticks/revolution.</p>
+                <p>The controller was developed in MATLAB/Simulink and deployed to a TI C2000 DAQBoard through the C2000 Microcontroller Blockset. Motor commands were bounded by the interface, making input saturation another practical consideration.</p>
+                <div class="block-steps" aria-label="Feedback path">
+                    <div class="block-step">Encoder angle measurements</div>
+                    <div class="block-step">State estimation / feedback</div>
+                    <div class="block-step">Motor command via C2000</div>
+                    <div class="block-step">Wheel torque and pendulum motion</div>
+                </div>
+
+                <h3 id="model">2. Deriving the Dynamic Model</h3>
+                <p>We started with a nonlinear model using the Lagrangian method. The generalized coordinates were pendulum angle <i>θ</i><sub>p</sub> and wheel angle <i>θ</i><sub>r</sub>. The model combines gravitational torque, the pendulum's rotational inertia, and motor torque applied to the wheel and reacted onto the arm.</p>
+                <p>The resulting dynamics were written in the normalized form used by our report:</p>
+                <div class="equation">θ̈<sub>p</sub> + a sin(θ<sub>p</sub>) = −b<sub>p</sub>u<br />θ̈<sub>r</sub> = b<sub>r</sub>u</div>
+                <p>Here <i>u</i> is the normalized motor control command, <i>a</i> is the gravitational dynamic coefficient, and <i>b</i><sub>p</sub> and <i>b</i><sub>r</sub> are input-to-acceleration gains. The input was scaled and limited to |<i>u</i>| ≤ 10 in the project model.</p>
+
+                <h4>Linearizing about the inverted equilibrium</h4>
+                <p>The upright position is inherently unstable, so we linearized the nonlinear model around <i>θ</i><sub>p</sub> = π. By defining the angular deviation as <i>δθ</i><sub>p</sub> = <i>θ</i><sub>p</sub> − π and applying the small-angle approximation sin(π + <i>δθ</i><sub>p</sub>) ≈ −<i>δθ</i><sub>p</sub>, we obtained a linear state-space model:</p>
+                <div class="equation">x = [δθ<sub>p</sub>, δθ̇<sub>p</sub>, δθ<sub>r</sub>, δθ̇<sub>r</sub>]<sup>T</sup><br />ẋ = Ax + Bu</div>
+                <p>The state matrix separates into pendulum and rotor dynamics. Experimentally identified values used in our report were <i>a</i> = 72.6, <i>b</i><sub>p</sub> = 1.026, and <i>b</i><sub>r</sub> = 181.44 in the report's normalized model. The inverted open-loop model has poles at approximately +8.52, −8.52, 0, and 0. The positive pole confirms the instability of the inverted equilibrium, while the zero poles represent the wheel's unrestrained position and velocity modes.</p>
+                <p>Checking controllability showed that the four-state linearized model could be controlled through the single motor input. For balancing, however, it was not necessary to regulate the wheel's absolute angle—its speed matters, but its angular position can settle to an arbitrary constant.</p>
+
+                <figure class="project-figure">
+                    <a href="../images/projects/reactionwheel_block.png"><img src="../images/projects/reactionwheel_block.png" alt="Original reaction wheel pendulum control-system block diagram" loading="lazy" onerror="this.closest('figure').style.display='none'" /></a>
+                    <figcaption>System block diagram from the existing project gallery, if available.</figcaption>
+                </figure>
+
+                <h3 id="identification">3. System Identification</h3>
+                <p>Deriving the equations alone was insufficient because several plant parameters depend on the physical apparatus. We estimated the relevant model coefficients from measured system behavior. The pendulum's natural oscillation frequency came from its free-swing response, and the motor-to-motion gains were incorporated into the normalized model used for feedback design.</p>
+                <p>Identifying the plant experimentally was important because a controller designed with inaccurate parameters can exhibit very different behavior when deployed. Model mismatch becomes especially relevant when using fast state observers, which rely on a mathematical prediction of the unmeasured states.</p>
+
+                <h3 id="feedback">4. State-Feedback Controller Design</h3>
+                <h4>Initial two-state feedback</h4>
+                <p>We first considered feedback using pendulum angular deviation and pendulum angular velocity. The feedback law took the form <i>u</i> = −<i>Kx</i>, with closed-loop poles selected using MATLAB pole placement. The target poles for the pendulum were −7.5 ± j13, corresponding to an underdamped response with faster restoring dynamics than the uncontrolled pendulum.</p>
+                <p>Although the two-state controller could balance the inverted pendulum in simulation, it did not directly penalize wheel speed. After a disturbance, the controller could restore the arm while allowing the flywheel to continue accelerating. That uncontrolled wheel-speed mode motivated an additional feedback state.</p>
+
+                <h4>Three-state feedback</h4>
+                <p>We expanded the controller to include wheel angular velocity while retaining pendulum angle and angular velocity. This changed the control law from two-state to three-state feedback without attempting to control absolute rotor angle.</p>
+                <div class="equation">K<sub>3</sub> ≈ [−400.0, −44.6, 0, −0.128]<br />u = −K<sub>3</sub>x</div>
+                <p>The selected closed-loop poles for the reduced three-state dynamics were −7.5 ± j13 and −7.5. Since all three are in the left half of the complex plane, the reduced linearized closed-loop system is locally asymptotically stable around the inverted equilibrium. The unregulated absolute rotor angle is not a balancing problem, since it does not influence the pendulum states.</p>
+                <p>Including wheel-speed feedback addressed the fundamental drawback of the two-state design, but it also meant that the controller was sensitive to the quality of the wheel-velocity estimate. That would become one of the main challenges on hardware.</p>
+
+                <figure class="project-figure">
+                    <a href="../images/projects/pendulum_threestate.png"><img src="../images/projects/pendulum_threestate.png" alt="Three-state feedback controller diagram from the original project gallery" loading="lazy" onerror="this.closest('figure').style.display='none'" /></a>
+                    <figcaption>Three-state feedback design from the existing project gallery, if available.</figcaption>
+                </figure>
+
+                <h3 id="friction">5. Motor Friction Identification and Compensation</h3>
+                <p>The motor did not respond to very small control commands as predicted by a frictionless model. This was especially problematic near the inverted balance point, where the feedback controller must issue small corrections to counter slow drift.</p>
+                <p>To estimate the friction, we operated the motor under PI speed control at several positive and negative velocity setpoints: ±25, ±50, ±75, ±100, and ±150 rad/s. Once the wheel reached steady state, the required control effort provided an estimate of the torque-equivalent friction command. We fitted separate positive- and negative-direction trends because the measured behavior was not perfectly symmetric.</p>
+                <div class="equation">F(ω<sub>r</sub>) ≈ bω<sub>r</sub> + c</div>
+                <table>
+                    <thead><tr><th>Wheel rotation</th><th>Viscous coefficient <i>b</i></th><th>Offset <i>c</i></th></tr></thead>
+                    <tbody>
+                        <tr><td>Positive direction</td><td>0.01178</td><td>+0.5255</td></tr>
+                        <tr><td>Negative direction</td><td>0.01158</td><td>−0.565</td></tr>
+                    </tbody>
+                </table>
+                <p>These fitted values are in the report's normalized motor-command convention, not directly in N·m. The nonzero offset captures Coulomb-like friction, while the speed-dependent term captures viscous-like losses.</p>
+                <p>We added a feedforward compensation term to oppose the estimated friction. Without compensation, weak correction commands could be absorbed by the friction dead band until the pendulum error became large enough to trigger an abrupt response. Compensation reduced this effect and made small motor commands more effective, improving fine balance.</p>
+
+                <h3 id="observer">6. Why We Replaced Numerical Differentiation with State Observers</h3>
+                <p>Both encoders measure angles, but the three-state controller also needs angular velocities. A straightforward approach is to differentiate the sampled encoder positions. In practice, this proved noisy: the encoders produce discrete counts, and the derivative can turn a small position change between samples into a large apparent velocity spike.</p>
+                <p>On hardware, the direct three-state controller sometimes achieved an almost-motionless inverted balance. In other runs, however, noisy velocity feedback could trigger large alternating motor commands and a self-reinforcing oscillation. The difference between simulation and physical behavior made the velocity estimator a critical part of the controller.</p>
+
+                <h4>Full-state observer</h4>
+                <p>We used a Luenberger state observer to estimate unmeasured states by evolving a copy of the plant model and correcting it with the difference between measured and predicted encoder positions:</p>
+                <div class="equation">x̂̇ = Ax̂ + Bu + L(y − Cx̂)<br />ė = (A − LC)e</div>
+                <p>In this formulation, x̂ is the estimated state, y is the measured output, and <i>L</i> is the observer gain. Choosing the eigenvalues of (A − LC) in the left half-plane ensures that the estimation error converges to zero for the linear model.</p>
+
+                <h4>Decoupling the pendulum and rotor observers</h4>
+                <p>Our first full observer was sensitive to variations in the nonlinear plant parameters. Because the linearized A matrix was already block-diagonal, we separated the estimator into two independent second-order observers: one estimating pendulum position and velocity, the other estimating rotor position and velocity.</p>
+                <p>This removed unnecessary cross-coupling in the observer correction gains, reducing the chance that noise from one encoder would contaminate the other subsystem's state estimate.</p>
+                <table>
+                    <thead><tr><th>Observer</th><th>Selected observer poles</th><th>Gain vector</th></tr></thead>
+                    <tbody>
+                        <tr><td>Pendulum angle and speed</td><td>−90, −95</td><td>[185, 8622.6]<sup>T</sup></td></tr>
+                        <tr><td>Reaction wheel angle and speed</td><td>−100, −105</td><td>[205, 10500]<sup>T</sup></td></tr>
+                    </tbody>
+                </table>
+                <p>These observer poles were selected to make the estimation dynamics faster than the feedback controller. Faster estimation helps limit lag but makes the design more sensitive to sensor noise and modeling errors. The decoupled implementation gave a better balance of responsiveness and consistency on the physical system.</p>
+
+                <figure class="project-figure">
+                    <a href="../images/projects/pendulum_observer.png"><img src="../images/projects/pendulum_observer.png" alt="Observer implementation figure from the original project gallery" loading="lazy" onerror="this.closest('figure').style.display='none'" /></a>
+                    <figcaption>Observer-based Simulink implementation.</figcaption>
+                </figure>
+                <!--
+                <figure class="project-figure">
+                    <a href="../images/projects/control/observer-controller.png"><img src="../images/projects/control/observer-controller.png" alt="Observer-based control Simulink block diagram extracted from the project report" loading="lazy" /></a>
+                    <figcaption>Observer-based Simulink implementation, reproduced from the project report. The observer replaces direct encoder-derivative velocity feedback with model-based state estimates.</figcaption>
+                </figure>
+                -->
+                <h3 id="switching">7. Switching Between Downward and Inverted Stabilization</h3>
+                <p>As an additional extension, we implemented two feedback controllers based on separate linearizations: one around the hanging equilibrium and one around the inverted equilibrium. The two controllers ran in parallel, with a Simulink switch selecting the appropriate feedback gain based on the pendulum angle.</p>
+                <div class="equation">cos(θ<sub>p</sub>) ≥ 0 → downward controller<br />cos(θ<sub>p</sub>) &lt; 0 → inverted controller</div>
+                <p>This condition separates the lower and upper half-planes. Near the hanging equilibrium, the downward controller damps residual motion. Once the pendulum is in the upper half-plane, the inverted controller attempts to catch and stabilize it upright. Each controller uses its own equilibrium-centered angle deviation, and both share the friction-compensation stage.</p>
+                <p>The down-controller gain obtained in the project was approximately <i>K</i><sub>down</sub> = [−258.4, 0.75, 0, 0.128]. This implementation demonstrated switching between local stabilization laws; it should not be confused with a separately designed, energy-based swing-up controller that carries the pendulum from rest at the bottom all the way to the top.</p>
+                <figure class="project-figure">
+                    <a href="../images/projects/control/up-down-switching-controller.png"><img src="../images/projects/control/up-down-switching-controller.png" alt="Simulink model for upward and downward switching control with friction compensation" loading="lazy" /></a>
+                    <figcaption>Switching-controller Simulink model extracted from the report. The cosine-based region selector chooses between upward and downward stabilization.</figcaption>
+                </figure>
+
+                <h3 id="testing">8. Simulation and Hardware Validation</h3>
+                <p>We compared the two-state, direct three-state, and observer-based controllers in MATLAB/Simulink and on the C2000 hardware. The nonlinear simulations were used to explore disturbance recovery, while physical tests exposed problems that were not obvious from the idealized model.</p>
+                <table>
+                    <thead><tr><th>Controller</th><th>Benefit</th><th>Limitation observed</th></tr></thead>
+                    <tbody>
+                        <tr><td>Two-state feedback</td><td>Stabilized pendulum angle in simulation</td><td>No wheel-speed control after disturbances</td></tr>
+                        <tr><td>Three-state feedback with friction compensation</td><td>Could achieve very tight inverted balance</td><td>Some hardware trials developed large oscillations from noisy velocity estimates</td></tr>
+                        <tr><td>Decoupled observer-based feedback</td><td>Repeatable inverted stabilization and recovery from small taps</td><td>Small persistent limit cycle and somewhat slower response</td></tr>
+                    </tbody>
+                </table>
+                <p>The report's simulation-disturbance table contains unfinished entries, so I have intentionally not assigned numerical disturbance-rejection limits here. Our most reliable comparison was qualitative hardware behavior: the observer-based controller did not always achieve the absolute smallest balance error, but it behaved much more consistently from trial to trial.</p>
+
+                <div class="note"><p><strong>Key finding:</strong> The best controller in an idealized simulation was not necessarily the most reliable implementation. Direct velocity feedback could be fast when it worked, but observer-based estimates were less sensitive to encoder quantization and therefore produced more repeatable stabilization.</p></div>
+
+                <h3 id="lessons">9. Engineering Takeaways</h3>
+                <p>This project connected several areas of classical and modern control: nonlinear modeling, experimental identification, local linearization, controllability, pole-placement feedback, friction compensation, and state estimation. More importantly, it revealed which parts of a mathematically stable design can fail when transferred to hardware.</p>
+                <p>Friction created a command dead band that interfered with fine corrections. Encoder quantization made direct velocity differentiation unreliable at low speeds. Model-based observers improved consistency, but introduced estimation lag and their own sensitivity to parameter mismatch. The final design therefore represented a tradeoff between aggressive correction and repeatable physical performance.</p>
+                <p>If continuing the project, I would focus on systematic characterization of encoder noise, observer bandwidth, actuator saturation, and friction near zero speed, then quantify disturbance recovery and steady-state limit-cycle amplitude across repeated trials.</p>
+
+                <div class="report-link">
+                    <a class="button primary" href="../Reports/control.pdf" target="_blank" rel="noopener">View Full Project Report (PDF)</a>
+                    <a class="button" href="../projects.html">Back to Projects</a>
+                </div>
+                <p style="font-size:.85em;color:#676b73;">Academic team project · ECE 486 (Spring 2026). Work described here is based on the team's submitted report. The report contains the complete equations, selected gains, and Simulink diagrams.</p>
+            </div>
+        </section>
+    </article>
+
+    <footer id="footer">
+        <ul class="icons">
+            <li><a href="https://www.linkedin.com/in/jyoukhana8580/" class="icon brands fa-linkedin" target="_blank" rel="noopener"><span class="label">LinkedIn</span></a></li>
+            <li><a href="mailto:jjy45321@gmail.com" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
+            <li><a href="https://github.com/jyoukhana4" class="icon brands fa-github" target="_blank" rel="noopener"><span class="label">GitHub</span></a></li>
+        </ul>
+        <ul class="copyright">
+            <li>&copy; John Youkhana</li><li>Design: <a href="https://html5up.net">HTML5 UP</a></li>
+        </ul>
+    </footer>
+</div>
+<script src="../assets/js/jquery.min.js"></script>
+<script src="../assets/js/jquery.scrollex.min.js"></script>
+<script src="../assets/js/jquery.scrolly.min.js"></script>
+<script src="../assets/js/skel.min.js"></script>
+<script src="../assets/js/browser.min.js"></script>
+<script src="../assets/js/breakpoints.min.js"></script>
+<script src="../assets/js/util.js"></script>
+<script src="../assets/js/main.js"></script>
+</body>
 </html>
