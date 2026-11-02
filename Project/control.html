@@ -23,11 +23,13 @@
         #rwp-project .metric { border: 1px solid #dedee4; background: #f8f9fb; border-radius: .55em; padding: 1em; }
         #rwp-project .metric .figure { display: block; color: #263d55; font-weight: 700; font-size: 1.25em; line-height: 1.3; }
         #rwp-project .metric .label { display: block; color: #606674; font-size: .78em; line-height: 1.5; margin-top: .4em; }
-        #rwp-project .toc { border-left: 3px solid #527b93; background: #f6f8fa; padding: 1em 1.5em; margin: 1.8em 0; }
-        #rwp-project .toc h3 { margin: 0 0 .7em; font-size: .95em; }
-        #rwp-project .toc ul { columns: 2; margin-bottom: 0; padding-left: 1.3em; }
-        #rwp-project .toc li { margin: 0 0 .35em; break-inside: avoid; }
-        #rwp-project .toc a { border-bottom: 0; }
+        /* Matches the boxed, two-column project navigation on the LDO page. */
+        #rwp-project .toc { border: 1px solid #dee5e9; background: #fafcfd; padding: 1.3em 1.4em; border-radius: 8px; margin: 1.4em 0 2.6em; }
+        #rwp-project .toc strong { display: block; margin-bottom: .65em; font-size: 1.05em; color: #25313f; }
+        #rwp-project .toc ul { margin: 0; padding-left: 1.45em; columns: 2; }
+        #rwp-project .toc li { padding: 0 .5em .25em 0; break-inside: avoid; }
+        #rwp-project .toc a { color: #2d627d; border-bottom: 1px dotted #aac2cf; text-decoration: none; }
+        #rwp-project .toc a:hover, #rwp-project .toc a:focus-visible { color: #17465f; border-bottom-color: #17465f; }
         #rwp-project .equation { background: #f6f8fa; border-left: 3px solid #9aaeba; padding: 1em 1.15em; margin: 1em 0 1.4em; line-height: 1.9; text-align: center; overflow-x: auto; font-family: Georgia, 'Times New Roman', serif; font-size: 1.1em; }
         #rwp-project .equation small { display:block; font-family: inherit; font-size: .75em; text-align: right; color: #666; }
         #rwp-project .note { background: #f4f6f8; border-left: 3px solid #567d91; padding: 1em 1.2em; margin: 1.6em 0; }
@@ -136,22 +138,22 @@
 
                 <!-- Optional existing photo from the user's previous website. Hide if not present. -->
                 <figure class="project-figure" id="hardware-photo">
-                    <a href="../images/projects/pendulum.jpg"><img src="../images/projects/pendulum.jpg" alt="Reaction wheel pendulum laboratory hardware" loading="lazy" onerror="this.closest('figure').style.display='none'" style="max-height:570px;object-fit:contain" /></a>
+                    <a href="../images/projects/control/pendulum.jpg"><img src="../images/projects/control/pendulum.jpg" alt="Reaction wheel pendulum laboratory hardware" loading="lazy" onerror="this.closest('figure').style.display='none'" style="max-height:570px;object-fit:contain" /></a>
                     <figcaption>Reaction wheel pendulum hardware.</figcaption>
                 </figure>
 
-                <nav class="toc" aria-label="Project sections">
-                    <h3>On this page</h3>
+                <nav class="toc" aria-label="On this page">
+                    <strong>Explore the design</strong>
                     <ul>
-                        <li><a href="#system">System and instrumentation</a></li>
-                        <li><a href="#model">Mathematical model</a></li>
-                        <li><a href="#identification">System identification</a></li>
-                        <li><a href="#feedback">Two- and three-state feedback</a></li>
-                        <li><a href="#friction">Friction compensation</a></li>
-                        <li><a href="#observer">Observer design</a></li>
-                        <li><a href="#switching">Up/down switching control</a></li>
-                        <li><a href="#testing">Simulation vs. hardware</a></li>
-                        <li><a href="#lessons">Results and takeaways</a></li>
+                        <li><a href="#system">1. System and instrumentation</a></li>
+                        <li><a href="#model">2. Mathematical model</a></li>
+                        <li><a href="#identification">3. System identification</a></li>
+                        <li><a href="#feedback">4. Two- and three-state feedback</a></li>
+                        <li><a href="#friction">5. Friction compensation</a></li>
+                        <li><a href="#observer">6. Observer design</a></li>
+                        <li><a href="#switching">7. Up/down switching control</a></li>
+                        <li><a href="#testing">8. Simulation vs. hardware</a></li>
+                        <li><a href="#lessons">9. Results and takeaways</a></li>
                     </ul>
                 </nav>
 
@@ -179,7 +181,7 @@
                 <p>Checking controllability showed that the four-state linearized model could be controlled through the single motor input. For balancing, however, it was not necessary to regulate the wheel's absolute angle—its speed matters, but its angular position can settle to an arbitrary constant.</p>
 
                 <figure class="project-figure">
-                    <a href="../images/projects/reactionwheel_block.png"><img src="../images/projects/reactionwheel_block.png" alt="Original reaction wheel pendulum control-system block diagram" loading="lazy" onerror="this.closest('figure').style.display='none'" /></a>
+                    <a href="../images/projects/control/reactionwheel_block.png"><img src="../images/projects/control/reactionwheel_block.png" alt="Original reaction wheel pendulum control-system block diagram" loading="lazy" onerror="this.closest('figure').style.display='none'" /></a>
                     <figcaption>System block diagram.</figcaption>
                 </figure>
 
@@ -199,7 +201,7 @@
                 <p>Including wheel-speed feedback addressed the fundamental drawback of the two-state design, but it also meant that the controller was sensitive to the quality of the wheel-velocity estimate. That would become one of the main challenges on hardware.</p>
 
                 <figure class="project-figure">
-                    <a href="../images/projects/pendulum_threestate.png"><img src="../images/projects/pendulum_threestate.png" alt="Three-state feedback controller diagram from the original project gallery" loading="lazy" onerror="this.closest('figure').style.display='none'" /></a>
+                    <a href="../images/projects/control/pendulum_threestate.png"><img src="../images/projects/control/pendulum_threestate.png" alt="Three-state feedback controller diagram from the original project gallery" loading="lazy" onerror="this.closest('figure').style.display='none'" /></a>
                     <figcaption>Three-state feedback design.</figcaption>
                 </figure>
 
@@ -239,15 +241,12 @@
                 <p>These observer poles were selected to make the estimation dynamics faster than the feedback controller. Faster estimation helps limit lag but makes the design more sensitive to sensor noise and modeling errors. The decoupled implementation gave a better balance of responsiveness and consistency on the physical system.</p>
 
                 <figure class="project-figure">
-                    <a href="../images/projects/pendulum_observer.png"><img src="../images/projects/pendulum_observer.png" alt="Observer implementation figure from the original project gallery" loading="lazy" onerror="this.closest('figure').style.display='none'" /></a>
-                    <figcaption>Observer-based Simulink implementation.</figcaption>
+                    <a href="../images/projects/control/pendulum_observer.png"><img src="../images/projects/control/pendulum_observer.png" alt="Observer implementation figure from the original project gallery" loading="lazy" onerror="this.closest('figure').style.display='none'" /></a>
+                    <figcaption>Simulink implementation of the observer-based state-feedback controller,
+    using model-based estimates of the unmeasured pendulum and reaction wheel velocities.</figcaption>
                 </figure>
-                <!--
-                <figure class="project-figure">
-                    <a href="../images/projects/control/observer-controller.png"><img src="../images/projects/control/observer-controller.png" alt="Observer-based control Simulink block diagram extracted from the project report" loading="lazy" /></a>
-                    <figcaption>Observer-based Simulink implementation, reproduced from the project report. The observer replaces direct encoder-derivative velocity feedback with model-based state estimates.</figcaption>
-                </figure>
-                -->
+
+
                 <h3 id="switching">7. Switching Between Downward and Inverted Stabilization</h3>
                 <p>As an additional extension, we implemented two feedback controllers based on separate linearizations: one around the hanging equilibrium and one around the inverted equilibrium. The two controllers ran in parallel, with a Simulink switch selecting the appropriate feedback gain based on the pendulum angle.</p>
                 <div class="equation">cos(θ<sub>p</sub>) ≥ 0 → downward controller<br />cos(θ<sub>p</sub>) &lt; 0 → inverted controller</div>
@@ -255,7 +254,7 @@
                 <p>The down-controller gain obtained in the project was approximately <i>K</i><sub>down</sub> = [−258.4, 0.75, 0, 0.128]. This implementation demonstrated switching between local stabilization laws; it should not be confused with a separately designed, energy-based swing-up controller that carries the pendulum from rest at the bottom all the way to the top.</p>
                 <figure class="project-figure">
                     <a href="../images/projects/control/up-down-switching-controller.png"><img src="../images/projects/control/up-down-switching-controller.png" alt="Simulink model for upward and downward switching control with friction compensation" loading="lazy" /></a>
-                    <figcaption>Switching-controller Simulink model . The cosine-based region selector chooses between upward and downward stabilization.</figcaption>
+                    <figcaption>Switching-controller Simulink model extracted from the report. The cosine-based region selector chooses between upward and downward stabilization.</figcaption>
                 </figure>
 
                 <h3 id="testing">8. Simulation and Hardware Validation</h3>

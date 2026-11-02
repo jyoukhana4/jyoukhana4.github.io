@@ -1,94 +1,240 @@
 <!DOCTYPE HTML>
 <!--
-	Spectral by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+    Spectral by HTML5 UP
+    html5up.net | @ajlkn
+    Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
 -->
 <html lang="en">
-	<head>
-		<title>FPGA Tetris Project</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<link rel="stylesheet" href="../assets/css/main.css" />
-    </head>
-	<body>
+<head>
+    <title>FPGA Tetris | John Youkhana</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="An engineering case study of a SystemVerilog Tetris game on a Spartan-7 FPGA, integrating USB keyboard input, HDMI video, and audio." />
+    <link rel="stylesheet" href="../assets/css/main.css" />
+    <style>
+        /* Scoped case-study styles: compatible with HTML5 UP Spectral */
+        .tetris-case { max-width: 1080px; margin: 0 auto; }
+        .tetris-case p { line-height: 1.8; }
+        .tetris-case h3 { margin-top: 2.3em; margin-bottom: .7em; }
+        .tetris-case h4 { margin-top: 1.35em; margin-bottom: .5em; }
+        .tetris-case a { overflow-wrap: anywhere; }
+        .tetris-lead { font-size: 1.08em; }
+        .tetris-eyebrow { text-transform: uppercase; letter-spacing: .12em; font-weight: 700; font-size: .75em; color: #5b6670; }
+        .tetris-stats { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 13px; margin: 1.7em 0; }
+        .tetris-stat { border: 1px solid #dce2e8; border-radius: 8px; background: #f5f7f9; padding: 14px 15px; }
+        .tetris-stat strong { display: block; font-size: 1.25em; color: #25313f; margin-bottom: 3px; }
+        .tetris-stat span { font-size: .77em; color: #55616f; }
+        .tetris-card { padding: 18px 21px; background: #f4f7f8; border: 1px solid #dfe5e8; border-radius: 7px; margin: 1.4em 0; }
+        .tetris-card p:last-child { margin-bottom: 0; }
+        .tetris-case .contents { border: 1px solid #dee5e9; background: #fafcfd; padding: 1.3em 1.4em; border-radius: 8px; margin: 1.5em 0 2.6em; }
+        .tetris-case .contents strong { display: block; margin-bottom: .65em; font-size: 1.05em; color: #25313f; }
+        .tetris-case .contents ul { margin: 0; padding-left: 1.45em; columns: 2; }
+        .tetris-case .contents li { padding: 0 .5em .25em 0; break-inside: avoid; }
+        .tetris-case .contents a { color: #2d627d; border-bottom-color: #aac2cf; }
+        .tetris-fig { margin: 2em auto; max-width: 100%; text-align: center; }
+        .tetris-fig img { display: block; margin: 0 auto; width: auto; max-width: 100%; max-height: 670px; height: auto; border: 1px solid #e2e6eb; background: #fff; border-radius: 5px; }
+        .tetris-fig figcaption { margin: .7em auto 0; font-size: .84em; line-height: 1.55; color: #626b73; max-width: 900px; }
+        .tetris-fig a { border-bottom: 0 !important; }
+        .tetris-fig--wide img { width: 100%; max-height: none; }
+        .tetris-twocol { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 20px; }
+        .tetris-twocol .tetris-fig { margin: 1em 0; }
+        .tetris-twocol img { max-height: 350px; }
+        .tetris-table { width:100%; display: block; overflow-x: auto; font-size: .9em; }
+        .tetris-table th,.tetris-table td { white-space: normal; vertical-align: top; }
+        .tetris-formula { font-size: 1.05em; text-align: center; background: #f4f7f8; border-radius: 6px; padding: 16px 12px; margin: 1em 0; }
+        .tetris-code { overflow-x: auto; white-space: pre; padding: 14px 16px; border-radius: 6px; background: #1e2936; color: #e8eff5; font-size: .87em; line-height: 1.6; }
+        .tetris-captionnote { color: #5e6874; font-size: .87em; }
+        .tetris-links { margin: 1.4em 0; }
+        .tetris-links a { margin-right: 18px; }
+        .tetris-end { border-top: 1px solid #dce2e8; margin-top: 2.7em; padding-top: 1.1em; }
+        @media screen and (max-width: 850px) { .tetris-stats { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+        @media screen and (max-width: 850px) { .tetris-case .contents ul { columns: 1; } }
+        @media screen and (max-width: 600px) { .tetris-twocol { grid-template-columns:1fr; } .tetris-stat strong { font-size:1.05em; } }
+    </style>
+</head>
+<body>
+    <div id="page-wrapper">
+        <header id="header">
+            <h1><a href="../index.html">John Youkhana</a></h1>
+            <nav id="nav"><ul><li class="special">
+                <a href="#menu" class="menuToggle"><span>Menu</span></a>
+                <div id="menu"><ul>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="../aboutme.html">About Me</a></li>
+                    <li><a href="../projects.html">Projects</a></li>
+                    <li><a href="../coursework.html">Courses</a></li>
+                </ul></div>
+            </li></ul></nav>
+        </header>
+        <article id="main">
+            <header>
+                <h2>Tetris on FPGA with SoC</h2>
+                <p>SystemVerilog &bull; MicroBlaze &bull; USB Input &bull; HDMI Video &bull; Audio</p>
+            </header>
+            <section class="wrapper style5">
+                <div class="inner tetris-case">
+                    <p class="tetris-eyebrow">ECE 385 Digital Systems Laboratory &middot; Spring 2025</p>
+                    <h3>Project Overview</h3>
+                    <p class="tetris-lead">For my ECE 385 final project at the University of Illinois Urbana-Champaign, I built a playable Tetris-style game on the RealDigital Urbana FPGA development board. The design combines custom <strong>SystemVerilog game logic</strong> with a <strong>MicroBlaze softcore processor</strong> for USB keyboard input, an HDMI video pipeline, and an FPGA-generated audio output.</p>
+                    <p>My goal was to bring together the major elements of a real-time digital system: accepting user input, maintaining game state, rendering graphics every frame, and producing audio. I used the AMD Spartan-7 XC7S50 FPGA on the Urbana board. Rather than running the entire game as software on the processor, the game-state updates and video color mapping were implemented in hardware; the processor primarily supported the USB host interface.</p>
+                    <p>Six tetromino shapes were implemented along with block movement, rotation, collision detection, row clearing, a score display, and progressively faster falling. The final design also had two documented limitations: the T piece was not included because the chosen grid representation was resource-intensive, and pressing rotate during a piece's spawning sequence could occasionally produce a malformed block.</p>
 
-		<!-- Page Wrapper -->
-			<div id="page-wrapper">
+                    <div class="tetris-stats" aria-label="Project highlights">
+                        <div class="tetris-stat"><strong>10 &times; 20</strong><span>Visible game field</span></div>
+                        <div class="tetris-stat"><strong>6 shapes</strong><span>Implemented tetrominoes</span></div>
+                        <div class="tetris-stat"><strong>USB + HDMI</strong><span>Interactive input and video</span></div>
+                        <div class="tetris-stat"><strong>Spartan-7</strong><span>XC7S50 FPGA</span></div>
+                    </div>
+                    <p class="tetris-links"><a href="../Reports/FPGA_report.pdf" class="button small icon solid fa-file-pdf" target="_blank" rel="noopener">Project Report</a> <a href="https://github.com/jyoukhana4/ECE385-FPGA-Tetris" class="button small icon brands fa-github" target="_blank" rel="noopener noreferrer">Source Repository</a></p>
+                    <figure class="tetris-fig tetris-fig--wide">
+                        <a href="../images/projects/fpga-tetris/architecture.png" target="_blank"><img src="../images/projects/fpga-tetris/architecture.png" alt="Original project architecture block diagram showing USB keyboard and MAX3421E, MicroBlaze, gameplay logic, color mapper, VGA controller, HDMI output, and audio." loading="lazy" /></a>
+                        <figcaption>Original system-level block diagram from my project report, showing the division of responsibilities between embedded USB handling and hardware video/game logic.</figcaption>
+                    </figure>
+                    <nav class="contents" aria-label="On this page">
+                        <strong>Explore the design</strong>
+                        <ul>
+                            <li><a href="#fpga-system">1. Architecture and partitioning</a></li>
+                            <li><a href="#fpga-grid">2. Grid representation and game state</a></li>
+                            <li><a href="#fpga-logic">3. Gameplay logic and piece handling</a></li>
+                            <li><a href="#fpga-usb">4. USB input and SoC integration</a></li>
+                            <li><a href="#fpga-video">5. Video generation and HDMI output</a></li>
+                            <li><a href="#fpga-audio">6. Audio generation</a></li>
+                            <li><a href="#fpga-testing">7. Verification and implementation results</a></li>
+                            <li><a href="#fpga-tradeoffs">8. Tradeoffs, limitations, and lessons learned</a></li>
+                        </ul>
+                    </nav>
 
-				<!-- Header -->
-					<header id="header">
-						<h1><a href="../index.html">John Youkhana</a></h1>
-						<nav id="nav">
-							<ul>
-								<li class="special">
-									<a href="#menu" class="menuToggle"><span>Menu</span></a>
-									<div id="menu">
-										<ul>
-											<li><a href="../index.html">Home</a></li>
-											<li><a href="../aboutme.html">About Me</a></li>
-											<li><a href="../projects.html">Projects</a></li>
-											<li><a href="../coursework.html">Courses</a></li>
-										</ul>
-									</div>
-								</li>
-							</ul>
-						</nav>
-					</header>
+                    <h3 id="fpga-system">1. Architecture and Hardware/Software Partitioning</h3>
+                    <p>The system was organized into independent functional blocks. The MicroBlaze processor communicates with the on-board MAX3421E USB host controller over SPI and provides keyboard keycodes to the programmable logic. The game logic stores the active and settled pieces, interprets keycodes, and updates the board. A color-mapping module turns the game state and pixel coordinates into RGB values. Timing from the VGA controller is passed with those RGB signals to the HDMI-transmitter IP, while a separate music module generates the audio output.</p>
+                    <div class="tetris-card"><h4>Why split the design this way?</h4><p>USB protocol handling is well suited to the processor and its driver/peripheral infrastructure. Grid updates, collision checks, and pixel color selection can be expressed as synchronous or combinational hardware. Keeping those responsibilities separate allowed the game engine and rendering logic to operate independently of the USB software path while sharing a compact keycode interface.</p></div>
+                    <p>The main modules described in my report were <code>mb_usb_hdmi_top.sv</code> (system integration), <code>Block.sv</code> (game-state logic), <code>Color_mapper.sv</code> (pixel colors and text), <code>TetrisTheme.sv</code> (audio), <code>VGA_controller.sv</code> (video timing), and <code>font_rom.sv</code> (8&times;16 character bitmaps). The design also instantiated the MicroBlaze block diagram, clocking wizard, and HDMI-transmitter IP.</p>
 
-				<!-- Main -->
-					<article id="main">
-						<header>
-							<h2>FPGA Tetris</h2>
-							<p>Digital Systems Final Project</p>
-						</header>
-						<section class="wrapper style5">
-							<div class="inner">
-                                <h3><a href="Project/fpgatetris.html">Tetris on FPGA</a></h3>
-                                <p><span class="image left"><a href="../images/projects/fpgatetris_env.jpg"><img src="../images/projects/fpgatetris_env.jpg" alt="" /></a></span>(ECE 385) Digital Systems Laboratory Final Project</p>
-								<p>
-								For my ECE 385 final project, I implemented a fully functional version of Tetris on an FPGA using the RealDigital Urbana board.
-								This project showcased a hardware-software co-design approach, integrating a MicroBlaze softcore processor for USB keyboard input via SPI communication with a MAX3421E USB host controller. 
-								The game logic, including block spawning, movement, rotation, collision detection, and line-clearing, was implemented in SystemVerilog using a 10x22 grid structure. HDMI output was achieved through a VGA controller and a VGA-to-HDMI converter IP, with real-time display of game elements and on-screen ASCII-rendered text. 
-								A live score display and user interactions enhanced the gameplay, while timing and rendering were synchronized with video frame signals.
-								</br>
-								Beyond the core gameplay, I also incorporated an audio playback module that generated the classic Tetris theme using pulse-width modulation and a music ROM. 
-								This involved decoding encoded note and octave data to produce square wave audio signals compatible with the FPGA’s AUX audio output. The overall system demonstrated modular design, combinational logic, SoC integration, and multimedia signal processing. 
-								This project highlighted my ability to design complex digital systems with real-time input/output handling, embedded audio, and efficient hardware resource management.
-								</br>
-								<h3><a href="/Reports/FPGA_report.pdf">Project Report</a></h3>
-								<h4><a href="https://github.com/jyoukhana4/ECE385-FPGA-Tetris">Project github repository</a></h4>
-								<hr />
-								</br>
-								<p><span class="image"><a href="../images/projects/fpgablock.jpg"><img src="../images/projects/fpgablock.jpg" alt="" style="width: 100%; max-width: 1000px; height: auto;"/></a></span></p>
-								<p><span class="image"><a href="../images/projects/fpgaimplementation.jpg"><img src="../images/projects/fpgaimplementation.jpg" alt="" style="width: 100%; max-width: 1000px; height: auto;"/></a></span></p>									
-							</div>
-						</section>
-					</article>
+                    <h3 id="fpga-grid">2. Choosing a Grid-Based Game-State Representation</h3>
+                    <p>A key early decision was how to represent the Tetris field in SystemVerilog. I chose a two-dimensional array with 10 columns and 22 rows. Only 20 rows are shown on screen; the additional two rows provide space above the visible field to spawn pieces before they enter the play area.</p>
+                    <pre class="tetris-code"><code>logic [2:0] play_area [10][22];
+// 10 columns; 22 internal rows; 3 bits per cell</code></pre>
+                    <p>Each three-bit cell stores one of eight values. Zero represents an empty cell, one represents a settled block, and values two through seven identify the six supported moving shapes. The same data drives gameplay decisions and the on-screen color mapping.</p>
+                    <table class="tetris-table">
+                        <thead><tr><th>Cell value</th><th>Meaning</th><th>Rendered color</th></tr></thead>
+                        <tbody>
+                            <tr><td>0</td><td>Empty cell</td><td>Black</td></tr>
+                            <tr><td>1</td><td>Settled / locked cell</td><td>Gray</td></tr>
+                            <tr><td>2</td><td>Square (O) piece</td><td>Yellow</td></tr>
+                            <tr><td>3</td><td>Line (I) piece</td><td>Light blue</td></tr>
+                            <tr><td>4</td><td>S piece</td><td>Green</td></tr>
+                            <tr><td>5</td><td>Z piece</td><td>Red</td></tr>
+                            <tr><td>6</td><td>L piece</td><td>Orange</td></tr>
+                            <tr><td>7</td><td>J piece</td><td>Dark blue</td></tr>
+                        </tbody>
+                    </table>
+                    <div class="tetris-twocol">
+                        <figure class="tetris-fig"><img src="../images/projects/fpga-tetris/playfield-grid.png" alt="10 column by 20 row playfield grid from the report" loading="lazy" /><figcaption>Visible playfield representation, 10 columns by 20 rows.</figcaption></figure>
+                        <figure class="tetris-fig"><img src="../images/projects/fpga-tetris/tetrominoes.png" alt="Six supported color-coded tetromino pieces" loading="lazy" /><figcaption>The six implemented shapes from the original report.</figcaption></figure>
+                    </div>
+                    <p>The advantage of this scheme was simplicity: collision tests, movement updates, and rendering all examined the same array. The cost was hardware utilization. Making each cell carry both occupancy and piece identity, and manipulating the grid across many conditions, produced a relatively large synthesized logic network. That tradeoff ultimately limited the addition of the seventh piece.</p>
 
-				<!-- Footer -->
-					<footer id="footer">
-						<ul class="icons">
-							<li><a href="https://www.linkedin.com/in/jyoukhana8580/" class="icon brands fa-linkedin" target="_blank"><span class="label">linkedin</span></a></li>
-							<li><a href="mailto:jjy45321@gmail.com" class="icon solid fa-envelope" target="_blank"><span class="label">Email</span></a></li>
-							<li><a href="https://github.com/jyoukhana4" class="icon brands fa-github" target="_blank"><span class="label">Github</span></a></li>
-						</ul>
-						<ul class="copyright">
-							<li>&copy; Untitled</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
-						</ul>
-					</footer>
+                    <h3 id="fpga-logic">3. Gameplay Logic: Movement, Rotation, and Row Clearing</h3>
+                    <h4>Spawning and gravity</h4>
+                    <p>The game selects a new shape and writes its occupied cells into the upper part of the array. A periodic movement event then attempts to move the active piece down by one row. The report describes an initial fall interval of approximately one half-second, with the speed increasing after completed lines. Updates were coordinated with the display frame timing.</p>
+                    <p>Before any downward movement, the logic checks the cells immediately below the active piece. Motion is rejected if a destination is outside the field or occupied by an unrelated cell. When a piece can no longer descend, its cells are converted to the settled value of one, and the next shape is generated.</p>
+                    <h4>Keyboard controls</h4>
+                    <table class="tetris-table">
+                        <thead><tr><th>Key</th><th>Game operation</th><th>Hardware behavior</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>A</strong></td><td>Move left</td><td>Check the neighboring left-hand cells, then update piece coordinates if valid.</td></tr>
+                            <tr><td><strong>D</strong></td><td>Move right</td><td>Perform the corresponding boundary/collision test and shift right.</td></tr>
+                            <tr><td><strong>W</strong></td><td>Rotate</td><td>Change the active piece's cell offsets around its selected pivot.</td></tr>
+                            <tr><td><strong>S</strong></td><td>Hard drop</td><td>Advance the piece rapidly until it reaches an occupied cell or the floor.</td></tr>
+                        </tbody>
+                    </table>
+                    <h4>Rotation using a pivot</h4>
+                    <p>Rotation required more than moving a block horizontally or vertically, because each piece contains multiple cells. I assigned a pivot to each shape and expressed the remaining cells as offsets from that point. For the horizontal line piece, for example, positions can be represented as <code>(x,y)</code>, <code>(x+1,y)</code>, <code>(x+2,y)</code>, and <code>(x+3,y)</code>. Rotating the line piece replaces those horizontal offsets with a vertical set and updates the pivot as needed for the next rotation.</p>
+                    <figure class="tetris-fig"><img src="../images/projects/fpga-tetris/rotation-pivot.png" alt="Handwritten pivot point example showing line piece horizontal-to-vertical rotation" loading="lazy" /><figcaption>Original handwritten rotation example from the report: representing piece cells relative to a pivot made positional updates easier to formulate.</figcaption></figure>
+                    <h4>Clearing lines and updating the score</h4>
+                    <p>After a piece locks, the logic checks rows to find those whose cells are all settled. When a full row is detected, the score is incremented and the rows above it shift downward by one position. This creates the core feedback loop of the game: placing pieces changes the board, completing rows clears space, and progress increases the falling speed.</p>
 
-			</div>
+                    <h3 id="fpga-usb">4. USB Keyboard Input with MicroBlaze and SPI</h3>
+                    <p>The RealDigital Urbana board includes a MAX3421E USB host controller. Instead of implementing USB host protocol handling entirely in SystemVerilog, I reused and adapted the MicroBlaze-based USB setup developed during the course. MicroBlaze communicates with the MAX3421E through an SPI interface, and the software-side USB handling makes keycodes available to the game logic.</p>
+                    <p>At the hardware level, SPI uses MOSI, MISO, SCLK, and chip-select signals. At the game level, the interface was intentionally simpler: an 8-bit keycode input to <code>Block.sv</code>. This separation meant the keyboard interface could be handled on the SoC side without making the piece-movement state machine responsible for USB transactions.</p>
+                    <div class="tetris-twocol">
+                        <figure class="tetris-fig"><img src="../images/projects/fpga-tetris/usb-host.png" alt="Urbana board MAX3421E SPI USB host interface" loading="lazy" /><figcaption>USB host-controller interface shown in the report.</figcaption></figure>
+                        <figure class="tetris-fig"><img src="../images/projects/fpga-tetris/microblaze-diagram.png" alt="Vivado MicroBlaze USB and peripheral block design" loading="lazy" /><figcaption>MicroBlaze and peripheral architecture adapted from the ECE 385 laboratory setup.</figcaption></figure>
+                    </div>
 
-		<!-- Scripts -->
-			<script src="../assets/js/jquery.min.js"></script>
-			<script src="../assets/js/jquery.scrollex.min.js"></script>
-			<script src="../assets/js/jquery.scrolly.min.js"></script>
-			<script src="../assets/js/skel.min.js"></script>
-            <script src="../assets/js/browser.min.js"></script>
-			<script src="../assets/js/breakpoints.min.js"></script>
-			<script src="../assets/js/util.js"></script>
-			<script src="../assets/js/main.js"></script>
+                    <h3 id="fpga-video">5. Video Generation: VGA Timing to HDMI Output</h3>
+                    <p>The display pipeline was another major integration task. A VGA controller generates horizontal synchronization (<code>hsync</code>), vertical synchronization (<code>vsync</code>), the active-video signal, and pixel coordinates <code>DrawX</code> and <code>DrawY</code>. These pixel coordinates allow the color mapper to decide whether the current pixel is part of the playfield, a tetromino, or on-screen text.</p>
+                    <p>In my implementation, the visible playfield spans approximately x = 240–399 and y = 80–399. A cell occupies 16&times;16 pixels, so these bounds map to the 10&times;20 visible grid. The report's mapping expression selects the corresponding board cell:</p>
+                    <pre class="tetris-code"><code>grid[(DrawX - 240) >> 4][((DrawY - 80) >> 4) + 2]</code></pre>
+                    <p>Subtracting the playfield origin converts absolute pixel coordinates to local coordinates. Right-shifting by four divides by 16 to determine the cell index. The additional row offset skips the two hidden spawn rows in the internal grid.</p>
+                    <p>Each cell's three-bit value is converted into RGB color channels. Those RGB values, together with video timing signals, feed a VGA-to-HDMI transmitter IP core that generates the differential HDMI output signals. Using the VGA controller for pixel timing let the custom logic focus on the content of each pixel rather than implementing the HDMI physical signaling directly.</p>
+                    <figure class="tetris-fig tetris-fig--wide"><img src="../images/projects/fpga-tetris/hdmi-pipeline.png" alt="HDMI controller and VGA-to-HDMI conversion block diagram" loading="lazy" /><figcaption>VGA timing and RGB data are processed by the HDMI transmitter IP for display through the board's HDMI connector.</figcaption></figure>
+                    <h4>On-screen text and score</h4>
+                    <p>I also rendered static messages and the live line count. The text logic stores ASCII character codes and indexes an 8&times;16 font ROM. The character code selects a 16-row bitmap; the current pixel coordinate determines which row and bit of that bitmap should be drawn. For numerical output, the score is separated into decimal digits, converted to ASCII starting at <code>0x30</code>, and passed through the same font lookup process.</p>
 
-	</body>
+                    <h3 id="fpga-audio">6. Audio Output with a Clock Divider and Music ROM</h3>
+                    <p>Audio was an additional feature beyond the primary gameplay requirements. I designed a separate <code>TetrisTheme.sv</code> module to create a sequence of pitched digital waveforms through the Urbana board's audio output rather than using a stored audio recording.</p>
+                    <p>A clock/counter arrangement advances through a music ROM, whose entries encode note and octave information. The module decodes the entry into a pitch selection and toggles its output after a computed delay. A zero-valued ROM entry produces silence. The resulting waveform is routed to the board's left and right auxiliary audio output pins.</p>
+                    <div class="tetris-formula">Encoded note = 12 &times; octave + note index</div>
+                    <p>This approach kept audio synthesis inside the FPGA design and introduced a separate timing problem: each note needed an appropriate pitch and duration while the rest of the game continued to operate. The project report notes that the music ROM content was adapted from an existing publicly available project; my implementation focused on the FPGA waveform-generation and integration logic.</p>
+                    <figure class="tetris-fig"><img src="../images/projects/fpga-tetris/audio-simulation.png" alt="Simulation of the audio module output waveform" loading="lazy" /><figcaption>Simulation capture demonstrating the digital audio output waveform. The webpage does not embed the copyrighted music.</figcaption></figure>
+
+                    <h3 id="fpga-testing">7. Functional Verification and Design Analysis</h3>
+                    <p>I used digital simulation to verify expected changes to the playfield before demonstrating the implemented system on hardware. The report includes signal-level traces showing pieces falling, locking into settled cells, generating subsequent shapes, and responding to keyboard inputs.</p>
+                    <div class="tetris-twocol">
+                        <figure class="tetris-fig"><img src="../images/projects/fpga-tetris/gravity-simulation.png" alt="SystemVerilog simulation of falling piece and grid register values" loading="lazy" /><figcaption>Gravity behavior: the occupied grid rows change as the piece descends.</figcaption></figure>
+                        <figure class="tetris-fig"><img src="../images/projects/fpga-tetris/hard-drop-simulation.png" alt="Waveform of a hard-drop keycode and rapid downward piece movement" loading="lazy" /><figcaption>Hard drop: the piece advances rapidly after the corresponding keycode input.</figcaption></figure>
+                    </div>
+                    <figure class="tetris-fig"><img src="../images/projects/fpga-tetris/left-movement-simulation.png" alt="Simulation demonstrating a keycode causing the piece to move left" loading="lazy" /><figcaption>Left-movement test: the occupied grid positions shift to the neighboring column following the A-key input.</figcaption></figure>
+                    <h4>Resource and power analysis</h4>
+                    <p>My report's implementation summary listed the following utilization and power estimates. These figures are reproduced as reported; the maximum-frequency number is a tool-analysis result, not the HDMI pixel-clock frequency.</p>
+                    <table class="tetris-table"><thead><tr><th>Report metric</th><th>Reported value</th></tr></thead><tbody>
+                        <tr><td>Lookup tables (LUTs)</td><td>29,978</td></tr>
+                        <tr><td>Flip-flops</td><td>3,485</td></tr>
+                        <tr><td>Block RAM</td><td>32</td></tr>
+                        <tr><td>DSP blocks</td><td>3</td></tr>
+                        <tr><td>Latches</td><td>0</td></tr>
+                        <tr><td>Reported timing-analysis frequency</td><td>119.7MHz</td></tr>
+                        <tr><td>Estimated static power</td><td>0.075W</td></tr>
+                        <tr><td>Estimated dynamic power</td><td>0.661W</td></tr>
+                        <tr><td>Estimated total power</td><td>0.736W</td></tr>
+                    </tbody></table>
+                    <p class="tetris-captionnote">The resource numbers above are taken from the Spring 2025 project report. A future update could pair them with a fresh Vivado utilization report for the archived build, including device capacity and synthesis settings.</p>
+
+                    <h3 id="fpga-tradeoffs">8. Limitations, Debugging, and Lessons Learned</h3>
+                    <h4>The missing T piece and logic utilization</h4>
+                    <p>The finished game included six tetromino types rather than all seven. My three-bit-per-cell representation used all eight possible values for empty cells, locked cells, and the six implemented pieces. Adding a seventh shape with a distinct code would require a different encoding or widening each cell to four bits. In the original design, widening the grid caused implementation to exceed the available FPGA resources.</p>
+                    <p>That result exposed the cost of the initial representation: it was easy to write and reason about, but did not scale efficiently. A better version could separate <em>occupancy</em> from <em>piece identity</em>, store settled cells more compactly, or represent the moving tetromino with a small set of coordinates rather than rewriting a wide 2D state array. Those are proposed improvements, not features of the final submitted build.</p>
+                    <h4>Rotation during spawning</h4>
+                    <p>I also observed an intermittent glitch when pressing the rotate key just as a new piece was generated. In some cases, the new piece appeared with a missing or misplaced cell. I reproduced the behavior by repeatedly pressing W after the previous piece settled. This suggested an interaction between rotation and piece-generation logic that would benefit from clearer state sequencing and input gating.</p>
+                    <h4>Potential improvements</h4>
+                    <p>Beyond resolving the spawn/rotation race and reducing LUT use, I would improve the visual presentation using a framebuffer or sprite-based rendering approach. That would support more detailed graphics and text than the original combinational color mapper and font ROM.</p>
+                    <div class="tetris-card"><h4>Main engineering takeaway</h4><p>This project helped me understand that digital design is not only about making the logic function correctly. Choices in state representation, module boundaries, clocking, and hardware/software partitioning determine whether a design is practical on a real FPGA. The T-piece limitation and the sporadic rotation glitch were useful examples of issues that only become clear once functionality, timing, and device-resource constraints are considered together.</p></div>
+
+                    <div class="tetris-end">
+                        <h3>Project Files and References</h3>
+                        <p><a href="../Reports/FPGA_report.pdf" target="_blank" rel="noopener">Read the full ECE 385 project report</a> &nbsp;&middot;&nbsp; <a href="https://github.com/jyoukhana4/ECE385-FPGA-Tetris" target="_blank" rel="noopener noreferrer">View the source repository on GitHub</a></p>
+                        <p class="tetris-captionnote">All technical figures displayed above were extracted from my original project report. The existing project photographs on my site can be added alongside these diagrams without changing the technical text.</p>
+                        <p><a href="../projects.html">&larr; Back to Projects</a></p>
+                    </div>
+                </div>
+            </section>
+        </article>
+        <footer id="footer">
+            <ul class="icons">
+                <li><a href="https://www.linkedin.com/in/jyoukhana8580/" class="icon brands fa-linkedin" target="_blank" rel="noopener noreferrer"><span class="label">LinkedIn</span></a></li>
+                <li><a href="mailto:jjy45321@gmail.com" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
+                <li><a href="https://github.com/jyoukhana4" class="icon brands fa-github" target="_blank" rel="noopener noreferrer"><span class="label">GitHub</span></a></li>
+            </ul>
+            <ul class="copyright"><li>&copy; John Youkhana</li><li>Design: <a href="https://html5up.net">HTML5 UP</a></li></ul>
+        </footer>
+    </div>
+    <script src="../assets/js/jquery.min.js"></script>
+    <script src="../assets/js/jquery.scrollex.min.js"></script>
+    <script src="../assets/js/jquery.scrolly.min.js"></script>
+    <script src="../assets/js/skel.min.js"></script>
+    <script src="../assets/js/browser.min.js"></script>
+    <script src="../assets/js/breakpoints.min.js"></script>
+    <script src="../assets/js/util.js"></script>
+    <script src="../assets/js/main.js"></script>
+</body>
 </html>

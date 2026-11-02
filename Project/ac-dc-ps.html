@@ -1,94 +1,237 @@
 <!DOCTYPE HTML>
 <!--
-	Spectral by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+    Spectral by HTML5 UP
+    html5up.net | @ajlkn
+    Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+    AC-DC Power Supply case study for John Youkhana's portfolio.
 -->
 <html lang="en">
-	<head>
-		<title>AC-DC Power supply</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<link rel="stylesheet" href="../assets/css/main.css" />
-    </head>
-	<body>
+<head>
+    <title>AC–DC Power Supply | John Youkhana</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Design, simulation, PCB layout, and bench testing of a multi-stage AC–DC power supply with a full-bridge rectifier, Zener reference, op-amp regulation stage, and BJT current boost." />
+    <link rel="stylesheet" href="../assets/css/main.css" />
+    <style>
+        /* Scoped to this article, preserving the rest of HTML5 UP Spectral. */
+        .acdc-page { color: #363944; }
+        .acdc-page p { line-height: 1.78; margin-bottom: 1.15em; }
+        .acdc-page h3 { margin: 2.25em 0 .6em; color: #293747; }
+        .acdc-page h4 { margin: 1.5em 0 .55em; color: #3c4f60; }
+        .acdc-page .lead { font-size: 1.09em; line-height: 1.8; max-width: 930px; }
+        .acdc-page .eyebrow { font-size: .78em; letter-spacing: .09em; text-transform: uppercase; color: #5b7887; font-weight: 700; margin-bottom: .7em; }
+        .acdc-page .intro-notes { font-size: .9em; color: #62717d; }
+        .acdc-page .intro-notes span + span:before { content: '\00b7'; margin: 0 .65em; }
+        .acdc-page .metrics { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 1em; margin: 1.65em 0 2em; }
+        .acdc-page .metric { border: 1px solid #dce4ea; border-radius: 9px; background: #f7fafc; padding: 1.1em 1em; min-width:0; }
+        .acdc-page .metric .number { font-size: 1.33em; line-height: 1.3; font-weight: 700; color: #244c65; overflow-wrap: anywhere; }
+        .acdc-page .metric .caption { color: #64727d; margin-top: .55em; font-size: .73em; line-height: 1.45; letter-spacing: .035em; }
+        .acdc-page .project-links { display:flex; flex-wrap:wrap; align-items:center; gap:.75em; margin:1.2em 0 1.8em; }
+        .acdc-page .project-links .button { margin:0; border-bottom:0; }
+        .acdc-page .contents { border:1px solid #dee5e9; background:#fafcfd; padding:1.3em 1.4em; border-radius:8px; margin:1.5em 0 2.6em; }
+        .acdc-page .contents strong { display:block; margin-bottom:.65em; font-size:1.05em; }
+        .acdc-page .contents ul { margin:0; padding-left:1.45em; columns:2; }
+        .acdc-page .contents li { padding:0 .5em .25em 0; break-inside:avoid; }
+        .acdc-page .contents a { color:#2d627d; border-bottom-color:#aac2cf; }
+        .acdc-page .equation { text-align:center; background:#f7fafc; border-left:3px solid #52829a; border-radius:0 6px 6px 0; padding:1em; margin:1.5em 0; font: 1.15em/1.65 Georgia,'Times New Roman',serif; overflow-x:auto; }
+        .acdc-page .equation .sub { font-family:Arial,sans-serif; font-size:.72em; color:#697784; }
+        .acdc-page .callout { background:#f5f9fb; border-left:3px solid #4c8199; border-radius:0 6px 6px 0; margin:1.4em 0 1.8em; padding:1em 1.3em; }
+        .acdc-page .callout p:last-child { margin-bottom:0; }
+        .acdc-page .callout strong { color:#2d5268; }
+        .acdc-page .figure { margin:1.6em auto 2.2em; max-width:1060px; }
+        .acdc-page .figure a { border-bottom:0; display:block; }
+        .acdc-page .figure img { display:block; width:100%; max-height:650px; height:auto; object-fit:contain; background:#fff; border:1px solid #e1e5e9; border-radius:7px; padding:.5em; }
+        .acdc-page .figure figcaption { font-size:.86em; line-height:1.6; text-align:center; color:#64717c; margin:.7em auto 0; }
+        .acdc-page .figure-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1.2em; }
+        .acdc-page .figure-grid .figure { margin:.6em 0 1.3em; width:100%; }
+        .acdc-page .figure-grid img { max-height:380px; }
+        .acdc-page .flowchart { display:flex; flex-wrap:wrap; gap:.6em; justify-content:center; align-items:stretch; margin:1.4em 0 1.8em; }
+        .acdc-page .flow-step { flex:1 1 125px; min-width:105px; max-width:190px; border:1px solid #dce4e8; background:#f7fafc; border-radius:7px; padding:.9em .65em; text-align:center; }
+        .acdc-page .flow-step strong { display:block; font-size:.88em; color:#28536c; }
+        .acdc-page .flow-step span { display:block; font-size:.78em; color:#687480; margin-top:.35em; }
+        .acdc-page table { width:100%; margin:1em 0 1.7em; }
+        .acdc-page th, .acdc-page td { vertical-align:top; }
+        .acdc-page .table-wrap { overflow-x:auto; }
+        .acdc-page .table-wrap table { min-width:520px; }
+        .acdc-page .fineprint { font-size:.88em; color:#66727c; }
+        .acdc-page .bottom-nav { display:flex; gap:1em; flex-wrap:wrap; justify-content:space-between; margin:2.4em 0; }
+        .acdc-page .bottom-nav a { color:#2d627d; }
+        @media screen and (max-width:850px) { .acdc-page .metrics { grid-template-columns:repeat(2,minmax(0,1fr)); } .acdc-page .contents ul { columns:1; } }
+        @media screen and (max-width:620px) { .acdc-page .figure-grid { grid-template-columns:1fr; } .acdc-page .metric { padding:.8em; } .acdc-page .metric .number { font-size:1.15em; } .acdc-page .flow-step { flex-basis:40%; } }
+    </style>
+</head>
+<body>
+    <div id="page-wrapper">
+        <header id="header">
+            <h1><a href="../index.html">John Youkhana</a></h1>
+            <nav id="nav">
+                <ul><li class="special">
+                    <a href="#menu" class="menuToggle"><span>Menu</span></a>
+                    <div id="menu"><ul>
+                        <li><a href="../index.html">Home</a></li>
+                        <li><a href="../aboutme.html">About Me</a></li>
+                        <li><a href="../projects.html">Projects</a></li>
+                        <li><a href="../coursework.html">Courses</a></li>
+                    </ul></div>
+                </li></ul>
+            </nav>
+        </header>
 
-		<!-- Page Wrapper -->
-			<div id="page-wrapper">
+        <article id="main">
+            <header>
+                <h2>AC–DC Power Supply</h2>
+                <p>Rectification &bull; Voltage Regulation &bull; PCB Design &bull; Bench Testing</p>
+            </header>
+            <section class="wrapper style5">
+                <div class="inner acdc-page">
+                    <p class="eyebrow">Personal Project &middot; Power Electronics &amp; Analog Circuit Design</p>
+                    <h3 style="margin-top:.4em">From an AC secondary to a regulated DC supply</h3>
+                    <p class="lead">I designed, simulated, assembled, and tested a multi-stage AC–DC power supply that converts a transformer’s low-voltage AC output into approximately <strong>9.5V DC</strong>. The circuit combines a full-bridge rectifier, reservoir capacitor, Zener diode reference, operational-amplifier gain stage, and BJT pass stage. I also designed the PCB in KiCad, taking into account current paths, routing, and component placement.</p>
+                    <p>My goal was to understand the design decisions behind each stage of a regulated supply rather than rely on an off-the-shelf regulator. The project brought together AC rectification, ripple filtering, a DC voltage reference, analog gain, transistor current amplification, and the practical issues that arise when a simulated circuit is built and measured.</p>
+                    <p class="intro-notes"><span>KiCad PCB Design</span><span>LTspice Simulation</span><span>Discrete Analog Components</span><span>Physical Prototype</span></p>
 
-				<!-- Header -->
-					<header id="header">
-						<h1><a href="../index.html">John Youkhana</a></h1>
-						<nav id="nav">
-							<ul>
-								<li class="special">
-									<a href="#menu" class="menuToggle"><span>Menu</span></a>
-									<div id="menu">
-										<ul>
-											<li><a href="../index.html">Home</a></li>
-											<li><a href="../aboutme.html">About Me</a></li>
-											<li><a href="../projects.html">Projects</a></li>
-											<li><a href="../coursework.html">Courses</a></li>
-										</ul>
-									</div>
-								</li>
-							</ul>
-						</nav>
-					</header>
+                    <div class="project-links">
+                        <a class="button primary small" href="#architecture">Explore Circuit Design</a>
+                        <a class="button small" href="#gallery">View Project Images</a>
+                        <a class="button small" href="../projects.html">All Projects</a>
+                    </div>
+                    <div class="metrics" aria-label="Project highlights">
+                        <div class="metric"><div class="number">120V AC</div><div class="caption">TRANSFORMER PRIMARY<br />External step-down stage</div></div>
+                        <div class="metric"><div class="number">25V AC</div><div class="caption">NOMINAL SECONDARY<br />RMS input to the rectifier</div></div>
+                        <div class="metric"><div class="number">~9.5V DC</div><div class="caption">OUTPUT<br />Approximately measured</div></div>
+                        <div class="metric"><div class="number">KiCad</div><div class="caption">CUSTOM PCB<br />Layout and assembly</div></div>
+                    </div>
+                    <div class="callout"><p><strong>Project scope.</strong> The circuit description and approximate output are based on my documented prototype. The transformer supplies a stepped-down AC secondary; the PCB is not presented as a directly mains-connected power supply. Exact ripple, efficiency, output-current, and thermal measurements are not reported here because I do not have verified values to publish.</p></div>
 
-				<!-- Main -->
-					<article id="main">
-						<header>
-							<h2>AC-DC Power Supply</h2>
-							<p></p>
-						</header>
-						<section class="wrapper style5">
-							<div class="inner">
-                                <h3><a href="Project/ac-dc-ps.html">AC-DC Power Supply</a></h3>
-                                <p><span class="image left"><a href="../images/powersupply_pcb.JPG"><img src="../images/powersupply_pcb.JPG" alt="" /></a></span>Personal Project</p>
-								<p>
-                                This project involved designing, simulating, building, and testing a complete AC–DC power supply circuit. The supply converts stepped-down AC voltage into a regulated DC output using a full-bridge rectifier, capacitor filter, 
-                                Zener diode voltage reference, 
-                                op-amp gain stage, and BJT pass transistor. The design process included comparing rectifier topologies, selecting component values, sizing the filter capacitor to limit ripple, and verifying circuit behavior across different 
-                                input voltages and load currents.
-								</br>
-                                A major focus of the project was understanding practical power supply tradeoffs. The full-bridge rectifier was selected over a simpler half-wave rectifier because it uses both halves of the AC waveform, reducing ripple 
-                                and improving filter performance. The Zener diode provided a stable reference voltage, the op-amp increased the regulated output to approximately 10 V, and the BJT stage improved load current capability. 
-                                Through LTspice simulation and bench testing, the project reinforced important design considerations such as voltage regulation, ripple reduction, component power ratings, thermal limits, safety, cost, and conversion efficiency.
-								</br>
-								<hr />
-								</br>	
-								<p><span class="image"><a href="../images/powersupply_pcb.JPG"><img src="../images/powersupply_pcb.JPG" alt="" style="width: 100%; max-width: 1000px; height: auto;"/></a></span></p>
-								<p><span class="image"><a href="../images/powersupply_schematic.JPG"><img src="../images/powersupply_schematic.JPG" alt="" style="width: 100%; max-width: 1000px; height: auto;"/></a></span></p>		
-                                <p><span class="image"><a href="../images/powersupply_3D.JPG"><img src="../images/powersupply_3D.JPG" alt="" style="width: 100%; max-width: 1000px; height: auto;"/></a></span></p>	
-								<p><span class="image"><a href="../images/powersupply.jpg"><img src="../images/powersupply.jpg" alt="" style="width: 100%; max-width: 1000px; height: auto;"/></a></span></p>							
-							</div>
-						</section>
-					</article>
+                    <nav class="contents" aria-label="On this page">
+                        <strong>Explore the design</strong>
+                        <ul>
+                            <li><a href="#architecture">1. Architecture and design goals</a></li>
+                            <li><a href="#rectifier">2. Full-bridge rectifier selection</a></li>
+                            <li><a href="#filter">3. Smoothing capacitor and ripple</a></li>
+                            <li><a href="#reference">4. Zener voltage reference</a></li>
+                            <li><a href="#amplifier">5. Op-amp and BJT output stage</a></li>
+                            <li><a href="#layout">6. PCB layout and component sizing</a></li>
+                            <li><a href="#validation">7. Simulation and bench validation</a></li>
+                            <li><a href="#tradeoffs">8. Tradeoffs and future improvements</a></li>
+                            <li><a href="#gallery">9. Design gallery</a></li>
+                        </ul>
+                    </nav>
 
-				<!-- Footer -->
-					<footer id="footer">
-						<ul class="icons">
-							<li><a href="https://www.linkedin.com/in/jyoukhana8580/" class="icon brands fa-linkedin" target="_blank"><span class="label">linkedin</span></a></li>
-							<li><a href="mailto:jjy45321@gmail.com" class="icon solid fa-envelope" target="_blank"><span class="label">Email</span></a></li>
-							<li><a href="https://github.com/jyoukhana4" class="icon brands fa-github" target="_blank"><span class="label">Github</span></a></li>
-						</ul>
-						<ul class="copyright">
-							<li>&copy; Untitled</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
-						</ul>
-					</footer>
+                    <h3 id="architecture">1. System Architecture and Design Goals</h3>
+                    <p>The design follows a sequence of power-conversion and regulation stages. An external transformer reduces the AC line voltage to a nominal 25V RMS secondary. A diode bridge converts both half-cycles into the same output polarity. A large filter capacitor then reduces the resulting voltage ripple. Finally, a Zener-based reference, op-amp gain stage, and BJT pass stage establish the lower DC output voltage and provide more useful load-current capability than the op amp alone.</p>
+                    <div class="flowchart" aria-label="Power supply block diagram">
+                        <div class="flow-step"><strong>Transformer</strong><span>120V AC to ~25V AC</span></div>
+                        <div class="flow-step"><strong>Bridge Rectifier</strong><span>Full-wave conversion</span></div>
+                        <div class="flow-step"><strong>Filter Capacitor</strong><span>Reduce 120Hz ripple</span></div>
+                        <div class="flow-step"><strong>Reference + Gain</strong><span>Zener and op amp</span></div>
+                        <div class="flow-step"><strong>BJT Pass Stage</strong><span>Supply the output load</span></div>
+                    </div>
+                    <p>Each stage was selected to address a different requirement: correct output polarity, reduced ripple, a relatively stable voltage reference, a controllable DC output level, and adequate output-current drive. This modular approach also made it easier to simulate and troubleshoot the circuit a stage at a time.</p>
+                    <figure class="figure">
+                        <a href="../images/projects/ACDCsupply/powersupply_schematic.JPG" target="_blank" rel="noopener"><img src="../images/projects/ACDCsupply/powersupply_schematic.JPG" alt="Full AC–DC power supply schematic with rectifier, smoothing capacitor, Zener reference, operational amplifier, and transistor output stage" loading="lazy" /></a>
+                        <figcaption>Complete schematic for the AC–DC supply. The circuit is organized into rectification, filtering, reference, voltage-control, and output-drive stages.</figcaption>
+                    </figure>
 
-			</div>
+                    <h3 id="rectifier">2. Why I Selected a Full-Bridge Rectifier</h3>
+                    <p>One of the first design decisions was whether to use half-wave or full-wave rectification. A half-wave rectifier uses only one half of the sinusoidal secondary voltage. A full-bridge rectifier instead routes current through the load in the same direction during both halves of the AC cycle.</p>
+                    <p>I chose the bridge topology because it provides a higher ripple frequency and more frequent charging of the reservoir capacitor. For a 60Hz input, full-wave rectification produces charging peaks at approximately 120Hz, compared with 60Hz for a half-wave rectifier. That makes ripple filtering easier for a given load and capacitance.</p>
+                    <div class="equation">f<sub>ripple</sub> = 2 f<sub>line</sub> = 120Hz<br /><span class="sub">For a 60Hz supply and full-bridge rectification</span></div>
+                    <p>The bridge requires two conducting diodes in each current path, so it introduces two forward-voltage drops. This represents a small efficiency tradeoff, but it is worthwhile for better use of the transformer secondary and lower ripple compared with a half-wave approach.</p>
+                    <h4>Estimating the rectified voltage</h4>
+                    <p>The nominal transformer output is specified in RMS voltage, whereas the reservoir capacitor charges toward the peak of the rectified waveform. For a 25V RMS secondary, the ideal peak is:</p>
+                    <div class="equation">V<sub>peak</sub> = &radic;2 &times; 25V &asymp; 35.4V</div>
+                    <p>In practice, the capacitor peak is reduced by the forward drops of the two conducting bridge diodes, and the DC input to the regulation stage changes with load current, transformer regulation, and ripple. The high rectified voltage relative to the approximately 9.5V output is also important when evaluating power dissipated in the linear output stage.</p>
 
-		<!-- Scripts -->
-			<script src="../assets/js/jquery.min.js"></script>
-			<script src="../assets/js/jquery.scrollex.min.js"></script>
-			<script src="../assets/js/jquery.scrolly.min.js"></script>
-			<script src="../assets/js/skel.min.js"></script>
-            <script src="../assets/js/browser.min.js"></script>
-			<script src="../assets/js/breakpoints.min.js"></script>
-			<script src="../assets/js/util.js"></script>
-			<script src="../assets/js/main.js"></script>
+                    <h3 id="filter">3. Filter Capacitor Selection and Ripple</h3>
+                    <p>The output of the bridge rectifier is a pulsating DC waveform. A reservoir capacitor is placed across the bridge output to store energy near each voltage peak and supply the following circuit between peaks. Without this capacitor, the voltage entering the regulation stage would rise and fall substantially every half-cycle.</p>
+                    <p>I sized the filtering stage with ripple reduction in mind. A useful first-order estimate for full-wave rectification is:</p>
+                    <div class="equation">&Delta;V<sub>pp</sub> &asymp; I<sub>load</sub> / (2 f<sub>line</sub> C)<br /><span class="sub">Approximation for a capacitor-input filter with nearly constant load current</span></div>
+                    <p>This shows the basic tradeoff: increasing capacitance lowers the expected ripple at a given load, while higher load current increases ripple. The equation is approximate because the capacitor recharges in short pulses near each AC peak and the transformer and diodes have nonzero impedance.</p>
+                    <p>The capacitor also needs a voltage rating safely above the expected peak voltage, including tolerances and possible no-load transformer voltage rise. Its ripple-current capability matters because the bridge charges it in pulses rather than with a steady DC current.</p>
+                    <div class="callout"><p><strong>Why filtering alone is not enough.</strong> A large reservoir capacitor reduces line-frequency ripple, but it does not create a precise, load-independent voltage. The Zener, op amp, and BJT stages are included to establish and deliver the lower target DC output.</p></div>
 
-	</body>
+                    <h3 id="reference">4. Generating a Reference with a Zener Diode</h3>
+                    <p>With the AC converted and filtered, the next step was to establish a reference voltage for the analog output stage. I used a Zener diode operated in reverse breakdown to provide a comparatively stable reference against changes in the unregulated DC input.</p>
+                    <p>A Zener reference requires current limiting. The resistor feeding the diode must provide enough reverse current to keep it in its intended regulation region while avoiding excessive power dissipation. Conceptually, the current available to the Zener branch is:</p>
+                    <div class="equation">I<sub>R</sub> &asymp; (V<sub>raw</sub> &minus; V<sub>Z</sub>) / R<sub>Z</sub></div>
+                    <p>When selecting this resistor and diode, the relevant checks are the minimum Zener current needed for regulation and the worst-case dissipation at the highest expected raw voltage. Real Zeners have finite dynamic resistance, tolerance, and temperature dependence, so the reference voltage is not perfectly constant.</p>
+                    <p>I used the reference as a starting point for the op-amp stage instead of attempting to deliver the full output current directly from the Zener network.</p>
+
+                    <h3 id="amplifier">5. Op-Amp Gain and BJT Current-Boost Stage</h3>
+                    <p>The Zener reference alone does not directly provide the desired output level or useful load-current drive. I incorporated an operational-amplifier stage to establish the target output voltage, followed by a BJT pass/current-boost stage to provide additional current to the load.</p>
+                    <h4>Setting the output voltage</h4>
+                    <p>The op amp allows a reference voltage to control a larger output level through an appropriate feedback and gain network. The required gain depends on the actual Zener reference voltage and the feedback topology shown in the schematic. For example, an ideal non-inverting gain stage follows the familiar relationship below, although the full transistor-driven supply must also account for the BJT and its feedback connection.</p>
+                    <div class="equation">A<sub>v</sub> = 1 + R<sub>f</sub> / R<sub>g</sub><br /><span class="sub">Reference equation for a non-inverting op-amp stage, not a claim of the exact resistor values used</span></div>
+                    <p>The circuit was designed to produce an output near 10V, and the assembled supply produced approximately 9.5V DC. A closer analysis of the exact set point would require the resistor and Zener values from the schematic and measured output under defined load conditions.</p>
+                    <h4>Why add a BJT?</h4>
+                    <p>An op amp is generally not intended to supply substantial load current directly from its output pin. By controlling the base of a pass transistor, the op amp can regulate a higher-current output stage while the BJT delivers the load current. The current capability and operating limits are then determined by the transistor, its base-drive requirements, and thermal constraints rather than the op amp alone.</p>
+                    <h4>Thermal considerations</h4>
+                    <p>This is a <strong>linear</strong> regulation approach, so the voltage dropped across the pass device turns into heat. A useful first estimate of pass-device dissipation is:</p>
+                    <div class="equation">P<sub>pass</sub> &asymp; (V<sub>raw</sub> &minus; V<sub>out</sub>) I<sub>out</sub></div>
+                    <p>Because a 25V RMS secondary can produce a rectified peak well above 30V, the difference between the raw bus and the approximately 9.5V output may be large. Higher load current therefore demands particular attention to transistor power rating, safe operating area, heat sinking, and overall efficiency. This is an important limitation of a simple high-headroom linear design.</p>
+
+                    <h3 id="layout">6. PCB Layout and Component Selection</h3>
+                    <p>Once the circuit had been developed and simulated, I translated it into a KiCad PCB. A major layout consideration was keeping the higher-current rectifier, filter, and pass-transistor paths short and adequately wide while routing the Zener reference and op-amp signals separately where practical.</p>
+                    <p>Trace width and copper losses matter because the highest-current branches create resistive voltage drops and dissipate heat. I paid particular attention to component placement and routing around the rectifier and transistor stage, where current and potential thermal dissipation are greater than in the reference and feedback circuitry.</p>
+                    <p>Component ratings were also part of the PCB design process: the reservoir capacitor needed sufficient voltage margin; the bridge diodes needed suitable forward-current and reverse-voltage ratings; and the BJT required enough voltage, current, and thermal capability for the intended load.</p>
+                    <div class="callout"><p><strong>Layout lesson.</strong> Correct connectivity is only the first PCB milestone. The current path through the bridge, filter capacitor, pass transistor, and load affects resistive loss, heating, and measured regulation. The sensitive reference and op-amp nodes have different routing priorities from the power path.</p></div>
+
+                    <h3 id="validation">7. Simulation and Bench Validation</h3>
+                    <p>I used LTspice to investigate the circuit behavior before assembling the physical supply. The simulation workflow helped me reason through the rectifier output, the role of the filter capacitor, the reference stage, and how the op amp and transistor cooperate to produce a regulated output.</p>
+                    <p>After assembling the PCB, I performed bench testing to confirm that the circuit produced DC output and to compare its behavior with the expected operation. The prototype delivered approximately <strong>9.5V DC</strong>. I also evaluated how input and loading conditions influenced the behavior of the supply.</p>
+                    <div class="table-wrap"><table>
+                        <thead><tr><th>Verification item</th><th>What it demonstrates</th><th>Documented status</th></tr></thead>
+                        <tbody>
+                            <tr><td>Rectifier output</td><td>Conversion of AC secondary voltage to pulsating DC</td><td>Part of design/simulation workflow</td></tr>
+                            <tr><td>Filter behavior</td><td>Reduction of AC ripple on the raw DC bus</td><td>Qualitatively evaluated</td></tr>
+                            <tr><td>Output voltage</td><td>Regulated DC level following reference, gain, and pass stages</td><td>Approximately 9.5V on the prototype</td></tr>
+                            <tr><td>Input/load variation</td><td>Effect of non-ideal conditions on regulation</td><td>Bench behavior considered; no numerical sweep reproduced</td></tr>
+                        </tbody>
+                    </table></div>
+                    <p class="fineprint">I have not included numerical efficiency, maximum-load-current, ripple-voltage, or thermal plots because those measurements are not available in the project material used for this page. They would be useful additions if the prototype is characterized again.</p>
+
+                    <h3 id="tradeoffs">8. Tradeoffs and Potential Improvements</h3>
+                    <p>The project demonstrated a straightforward way to combine power conversion and analog regulation, but also highlighted several tradeoffs:</p>
+                    <ul>
+                        <li><strong>Bridge rectification versus half-wave:</strong> a bridge adds one extra diode drop to each conducting path compared with a single-diode half-wave rectifier, but provides twice the charging frequency at the same line frequency.</li>
+                        <li><strong>Capacitance versus size and stress:</strong> increasing the reservoir capacitance reduces ripple but can increase size, cost, and charging-current peaks.</li>
+                        <li><strong>Reference accuracy:</strong> the Zener's dynamic resistance and temperature behavior place limits on how stable the reference voltage can be.</li>
+                        <li><strong>Output-current capability versus heating:</strong> the BJT makes higher output current possible but can dissipate significant power because of the voltage drop across the linear pass stage.</li>
+                        <li><strong>Efficiency:</strong> a switching regulator or a lower-voltage transformer secondary could improve efficiency for a higher-current or continuously loaded application, at the expense of a different design and its own tradeoffs.</li>
+                    </ul>
+                    <p>A next revision could include a systematic load sweep, oscilloscope measurements of ripple before and after regulation, thermal measurements of the transistor, and a quantified comparison between the simulated and measured load regulation.</p>
+
+                    <h3 id="gallery">9. Design Gallery</h3>
+                    <p>The following images document the PCB layout, 3D design, and assembled hardware. The complete schematic is shown earlier in the system-architecture section.</p>
+                    <div class="figure-grid">
+                        <figure class="figure"><a href="../images/projects/ACDCsupply/powersupply_pcb.JPG" target="_blank" rel="noopener"><img src="../images/projects/ACDCsupply/powersupply_pcb.JPG" alt="KiCad PCB layout of the AC–DC power supply" loading="lazy" /></a><figcaption>KiCad PCB design, including routing for the conversion and output stages.</figcaption></figure>
+                        <figure class="figure"><a href="../images/projects/ACDCsupply/powersupply_3D.JPG" target="_blank" rel="noopener"><img src="../images/projects/ACDCsupply/powersupply_3D.JPG" alt="3D rendering of the AC–DC power supply PCB" loading="lazy" /></a><figcaption>3D PCB view used to review component arrangement and mechanical layout.</figcaption></figure>
+                    </div>
+                    <figure class="figure"><a href="../images/projects/ACDCsupply/powersupply.jpg" target="_blank" rel="noopener"><img src="../images/projects/ACDCsupply/powersupply.jpg" alt="Assembled AC–DC power supply prototype" loading="lazy" /></a><figcaption>Physical prototype following PCB fabrication and assembly.</figcaption></figure>
+
+                    <div class="callout"><p><strong>Engineering takeaway.</strong> This project connected the theoretical operation of AC rectification and analog regulation to practical component selection, PCB construction, and testing. It also made clear why voltage headroom, filter ripple, and transistor dissipation must be considered together rather than evaluating each stage independently.</p></div>
+                    <div class="bottom-nav"><a href="../projects.html">&larr; Back to Projects</a><a href="#main">Back to top &uarr;</a></div>
+                </div>
+            </section>
+        </article>
+
+        <footer id="footer">
+            <ul class="icons">
+                <li><a href="https://www.linkedin.com/in/jyoukhana8580/" class="icon brands fa-linkedin" target="_blank" rel="noopener noreferrer"><span class="label">LinkedIn</span></a></li>
+                <li><a href="mailto:jjy45321@gmail.com" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
+                <li><a href="https://github.com/jyoukhana4" class="icon brands fa-github" target="_blank" rel="noopener noreferrer"><span class="label">GitHub</span></a></li>
+            </ul>
+            <ul class="copyright"><li>&copy; John Youkhana</li><li>Design: <a href="https://html5up.net">HTML5 UP</a></li></ul>
+        </footer>
+    </div>
+    <script src="../assets/js/jquery.min.js"></script>
+    <script src="../assets/js/jquery.scrollex.min.js"></script>
+    <script src="../assets/js/jquery.scrolly.min.js"></script>
+    <script src="../assets/js/skel.min.js"></script>
+    <script src="../assets/js/browser.min.js"></script>
+    <script src="../assets/js/breakpoints.min.js"></script>
+    <script src="../assets/js/util.js"></script>
+    <script src="../assets/js/main.js"></script>
+</body>
 </html>
